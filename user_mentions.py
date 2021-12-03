@@ -9,7 +9,7 @@ bearer_token = os.environ.get("BEARER_TOKEN")
 
 def create_url():
     # Replace with user ID below
-    user_id = 2244994945
+    user_id = 1185222199982080001
     return "https://api.twitter.com/2/users/{}/mentions".format(user_id)
 
 

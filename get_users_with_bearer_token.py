@@ -11,7 +11,7 @@ def create_url():
     # Specify the usernames that you want to lookup below
     # You can enter up to 100 comma-separated values.
     usernames = "usernames=TweetWrapped"
-    user_fields = "user.fields=created_at,description,public_metrics,id"
+    user_fields = "user.fields=created_at,description,public_metrics"
     # User fields are adjustable, options include:
     # created_at, description, entities, id, location, name,
     # pinned_tweet_id, profile_image_url, protected,
