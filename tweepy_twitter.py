@@ -4,9 +4,9 @@ import twitter_credentials
 # Client
 def getClient():
     client = tweepy.Client(bearer_token=twitter_credentials.bearer_token,
-                       consumer_key=twitter_credentials.consumer_key,
-                       consumer_secret=twitter_credentials.consumer_secret,
-                       access_token=None, access_token_secret=None)
+                           consumer_key=twitter_credentials.consumer_key,
+                           consumer_secret=twitter_credentials.consumer_secret,
+                           access_token=None, access_token_secret=None)
     return client
 
 # User info
