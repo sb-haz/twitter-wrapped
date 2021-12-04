@@ -1,4 +1,7 @@
 import tweepy
+import re
+import textblob
+#from textblob import TextBlob
 import twitter_credentials
 
 # Client
@@ -21,8 +24,9 @@ def getUserRecentTweets(id):
     user_tweets = client.get_users_tweets(id = id,
                                           tweet_fields = ['public_metrics'],
                                           exclude = ['retweets','replies'],
-                                          max_results = 10,
-                                          start_time = '2021-09-02T00:00:00.000Z')
+                                          max_results = 100,
+                                          #start_time = '2021-09-02T00:00:00.000Z'
+                                          )
     return user_tweets
     
 # Get user recent tweets
@@ -32,6 +36,9 @@ def storeUserTweets(username):
     
     if len(user_tweets.data) > 0:
         for x in user_tweets.data:
-            print(x)
+            print(clean_tweet(str(x)))
+            
+def clean_tweet(tweet):
+    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
 
 storeUserTweets('finesstv')
