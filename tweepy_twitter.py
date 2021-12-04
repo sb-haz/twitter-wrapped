@@ -39,9 +39,10 @@ def storeUserTweets(username):
     user_tweets = getUserRecentTweets(user.id) # get tweets of user by id
     
     if len(user_tweets.data) > 0:
-        
         for x in user_tweets.data:
             print(clean_tweet(str(x)))
+    else:
+        print("No tweets")
             
             
 # credit freeCodeCamp.org
