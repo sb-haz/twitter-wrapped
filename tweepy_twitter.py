@@ -87,16 +87,16 @@ def createUserWordCloud(username):
 
     # WordCloud attributes
     wordCloud = WordCloud(
-        font_path=font,
+        font_path = font,
         #margin = 10,
-        mask=custom_mask,
-        background_color='black',
+        mask = custom_mask,
+        background_color = 'black',
         #background_color = None,
         #mode = 'RGBA',
-        stopwords=stopwords,
-        height=1000,
-        width=1000,
-        include_numbers=False,  # include numbers
+        stopwords = stopwords,
+        height = 1000,
+        width = 1000,
+        include_numbers = False,  # include numbers
         # color_func = lambda *args, **kwargs: (255,255,255) # text colour
     )
     
