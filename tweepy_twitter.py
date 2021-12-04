@@ -4,6 +4,7 @@ import textblob
 #from textblob import TextBlob
 import twitter_credentials
 
+
 # Client
 def getClient():
     client = tweepy.Client(bearer_token = twitter_credentials.bearer_token,
@@ -12,11 +13,13 @@ def getClient():
                            access_token = None, access_token_secret = None)
     return client
 
+
 # User info
 def getUserInfo(user):
     client = getClient()
     user = client.get_user(username=user)
     return user.data
+
 
 # Tweets
 def getUserRecentTweets(id):
@@ -28,17 +31,22 @@ def getUserRecentTweets(id):
                                           #start_time = '2021-09-02T00:00:00.000Z'
                                           )
     return user_tweets
-    
+
+
 # Get user recent tweets
 def storeUserTweets(username):
     user = getUserInfo(username) # get user info, such as id
     user_tweets = getUserRecentTweets(user.id) # get tweets of user by id
     
     if len(user_tweets.data) > 0:
+        
         for x in user_tweets.data:
             print(clean_tweet(str(x)))
             
+            
+# credit freeCodeCamp.org
+# removes special characters and hyperlinks
 def clean_tweet(tweet):
-    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
+    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^'^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
 
-storeUserTweets('finesstv')
+storeUserTweets('tweetwrapped')
