@@ -1,9 +1,12 @@
 # Twitter API
 twitter_credentials.py
 
-# User data
-user_tweets/
-word_cloud_output/
+# User tweets / word clouds
+# Remove contents but keep folder
+user_tweets/*
+word_cloud_output/*
+!user_tweets/.gitkeep
+!word_cloud_output/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
