@@ -6,7 +6,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator  # wordcloud
 from PIL import Image  # load image
 import numpy as np  # get colour of image
 
-import sys # running python file with args, remove later
+import sys  # running python file with args, remove later
 
 
 # Client
@@ -43,45 +43,53 @@ def storeUserTweets(username):
     user_tweets = getUserRecentTweets(user.id)  # get tweets of user by id
 
     file_path = 'user_tweets/' + username + '.txt'
-    
+
     # user has tweets
     if len(user_tweets.data) > 0:
-        
+
         # user tweets not stored in file
         if not os.path.exists(file_path):
-            
+
             # create new file
             file = open(file_path, 'w', encoding='utf-8')
-                
+
             # write each tweet into new file
             for x in user_tweets.data:
                 file.write(clean_tweet(str(x)) + '\n')
 
             file.close()
-            
+            return True
+
         else:
             # return as error in future
             # print("User tweets file already exists")
             return False
+
     else:
         # user has no tweets
         # print("No tweets")
         return False
 
 
-# credit freeCodeCamp.org
-# removes special characters and hyperlinks
-# ’' escapes apostrophes
 def clean_tweet(tweet):
-    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z’' \t])|(\w+:\/\/\S+)", " ", tweet).split())
+    
+    # replace ’ with '
+    tweet = tweet.replace('’', '\'')
+    
+    # credit freeCodeCamp.org - removes special characters and hyperlinks
+    # modified to allow '
+    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z' \t])|(\w+:\/\/\S+)", " ", tweet).split())
 
 
 # Generating word cloud image
 def createUserWordCloud(username):
+    
     # Content-related
     text = open('user_tweets\\' + username + '.txt',
                 'r', encoding='utf-8').read()
-    stopwords = STOPWORDS
+
+    # Stop words, add 'gt' to set
+    stopwords = STOPWORDS.add('gt')
 
     # Mask
     custom_mask = np.array(Image.open('masks\\twitter_logo.png'))
@@ -89,19 +97,19 @@ def createUserWordCloud(username):
 
     # WordCloud attributes
     wordCloud = WordCloud(
-        font_path = font,
+        font_path=font,
         #margin = 10,
-        mask = custom_mask,
-        background_color = 'black',
+        mask=custom_mask,
+        background_color='black',
         #background_color = None,
         #mode = 'RGBA',
-        stopwords = stopwords,
-        height = 1000,
-        width = 1000,
-        include_numbers = False,  # include numbers
+        stopwords=stopwords,
+        height=1000,
+        width=1000,
+        include_numbers=False,  # include numbers
         # color_func = lambda *args, **kwargs: (255,255,255) # text colour
     )
-    
+
     # Generate
     wordCloud.generate(text)
 
@@ -114,6 +122,7 @@ def createUserWordCloud(username):
 
 
 def main(username):
+    
     # Get user tweets
     # Create word cloud
     if storeUserTweets(username):
