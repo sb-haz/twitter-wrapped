@@ -51,7 +51,7 @@ def storeUserTweets(username):
         if not os.path.exists(file_path):
             
             # create new file
-            file = open(file_path, 'w')
+            file = open(file_path, 'w', encoding='utf-8')
                 
             # write each tweet into new file
             for x in user_tweets.data:
@@ -61,10 +61,12 @@ def storeUserTweets(username):
             
         else:
             # return as error in future
-            print("User tweets file already exists")
+            # print("User tweets file already exists")
+            return False
     else:
         # user has no tweets
-        print("No tweets")
+        # print("No tweets")
+        return False
 
 
 # credit freeCodeCamp.org
@@ -114,8 +116,8 @@ def createUserWordCloud(username):
 def main(username):
     # Get user tweets
     # Create word cloud
-    storeUserTweets(username)
-    createUserWordCloud(username)
+    if storeUserTweets(username):
+        createUserWordCloud(username)
 
 
 if __name__ == "__main__":
