@@ -134,11 +134,11 @@ def main(username):
 def tweetsToDataFrame(tweets):
     df = pd.DataFrame(data = [tweet.text for tweet in tweets], columns=['tweets'])
     
-    df['retweet_count'] = np.array([tweet.public_metrics.get('retweet_count') for tweet in tweets])
-    df['reply_count'] = np.array([tweet.public_metrics.get('reply_count') for tweet in tweets])
-    df['like_count'] = np.array([tweet.public_metrics.get('like_count') for tweet in tweets])
-    df['quote_count'] = np.array([tweet.public_metrics.get('quote_count') for tweet in tweets])
-    df['created_at'] = np.array([tweet.created_at for tweet in tweets])
+    #df['retweet_count'] = np.array([tweet.public_metrics.get('retweet_count') for tweet in tweets])
+    #df['reply_count'] = np.array([tweet.public_metrics.get('reply_count') for tweet in tweets])
+    #df['like_count'] = np.array([tweet.public_metrics.get('like_count') for tweet in tweets])
+    #df['quote_count'] = np.array([tweet.public_metrics.get('quote_count') for tweet in tweets])
+    #df['created_at'] = np.array([tweet.created_at for tweet in tweets])
     
     return df
 
@@ -173,12 +173,13 @@ def main2(username):
     #print('created_at ', np.max(df['created_at']))
     
     df['sentiment'] = np.array([analyse_sentiment(tweet) for tweet in df['tweets']])
-    
+    pd.set_option('display.max_rows', 100)
+
     print(df.head(100)) # print dataframe
     
-    print('Overall sentiment ', np.average(df['sentiment']))
+    print('Overall sentiment ', np.average(df['sentiment']) * 100)
 
     
 if __name__ == "__main__":
-    main2('finesstv')
+    main2('twitter')
     #main(sys.argv[1])
