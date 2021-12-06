@@ -146,8 +146,14 @@ def main2(username):
     
     #print(dir(user_tweets.data)) # What attributes exist
     #print(user_tweets.data[0].public_metrics)
+    
     df = tweetsToDataFrame(user_tweets.data)
     # print(df.head(100)) # print dataframe
+    
+    print('retweets ', np.max(df['retweet_count']))
+    print('reply ', np.max(df['reply_count']))
+    print('like ', np.max(df['like_count']))
+    print('quote ', np.max(df['quote_count'])) 
 
 if __name__ == "__main__":
     main2('finesstv')
