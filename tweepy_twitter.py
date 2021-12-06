@@ -142,6 +142,20 @@ def tweetsToDataFrame(tweets):
     
     return df
 
+
+def analyse_sentiment(tweet):
+    analysis = TextBlob(cleanTweet(tweet))
+    return analysis.sentiment.polarity
+    
+    # return polarity as 1, 0, -1
+    # if analysis.sentiment.polarity > 0:
+    #     return 1
+    # elif analysis.sentiment.polarity == 0:
+    #     return 0
+    # else:
+    #     return -1
+    
+    
 def main2(username):
     user = getUserInfo(username)  # get user info, such as id
     user_tweets = getUserRecentTweets(user.id)
@@ -164,17 +178,6 @@ def main2(username):
     
     print('Overall sentiment ', np.average(df['sentiment']))
 
-def analyse_sentiment(tweet):
-    analysis = TextBlob(cleanTweet(tweet))
-    return analysis.sentiment.polarity
-    
-    # return polarity as 1, 0, -1
-    # if analysis.sentiment.polarity > 0:
-    #     return 1
-    # elif analysis.sentiment.polarity == 0:
-    #     return 0
-    # else:
-    #     return -1
     
 if __name__ == "__main__":
     main2('finesstv')
