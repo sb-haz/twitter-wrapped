@@ -6,6 +6,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator  # wordcloud
 from PIL import Image  # load image
 import numpy as np  # numerical python library
 import pandas as pd  # store content into dataframes
+from textblob import TextBlob # sentiment analysis
 
 import sys  # running python file with args, remove later
 
@@ -149,14 +150,30 @@ def main2(username):
     #print(user_tweets.data[0].public_metrics)
     
     df = tweetsToDataFrame(user_tweets.data)
-    print(df.head(100)) # print dataframe
-    
-    print('retweets ', np.max(df['retweet_count']))
-    print('reply ', np.max(df['reply_count']))
-    print('like ', np.max(df['like_count']))
-    print('quote ', np.max(df['quote_count']))
-    print('created_at ', np.max(df['created_at'])) 
 
+    # print metrics
+    #print('retweets ', np.max(df['retweet_count']))
+    #print('reply ', np.max(df['reply_count']))
+    #print('like ', np.max(df['like_count']))
+    #print('quote ', np.max(df['quote_count']))
+    #print('created_at ', np.max(df['created_at']))
+    
+    df['sentiment'] = np.array([analyse_sentiment(tweet) for tweet in df['tweets']])
+    
+    print(df.head(100)) # print dataframe
+
+def analyse_sentiment(tweet):
+    analysis = TextBlob(cleanTweet(tweet))
+    return analysis.sentiment.polarity
+    
+    # return polarity as 1, 0, -1
+    # if analysis.sentiment.polarity > 0:
+    #     return 1
+    # elif analysis.sentiment.polarity == 0:
+    #     return 0
+    # else:
+    #     return -1
+    
 if __name__ == "__main__":
     main2('finesstv')
     #main(sys.argv[1])
