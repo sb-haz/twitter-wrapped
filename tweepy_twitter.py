@@ -161,6 +161,8 @@ def main2(username):
     df['sentiment'] = np.array([analyse_sentiment(tweet) for tweet in df['tweets']])
     
     print(df.head(100)) # print dataframe
+    
+    print('Overall sentiment ', np.average(df['sentiment']))
 
 def analyse_sentiment(tweet):
     analysis = TextBlob(cleanTweet(tweet))
