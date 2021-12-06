@@ -32,7 +32,7 @@ def getUserRecentTweets(id):
     user_tweets = client.get_users_tweets(id = id,
                                           tweet_fields = ['public_metrics'],
                                           exclude = ['retweets', 'replies'],
-                                          max_results = 10,
+                                          max_results = 100,
                                           #start_time = '2021-09-02T00:00:00.000Z'
                                           )
     #print(user_tweets.data[0].public_metrics)
@@ -48,7 +48,7 @@ def storeUserTweets(username):
 
     # user has tweets
     if len(user_tweets.data) > 0:
-        #-------------------------------------------------------------------------#
+        
         # user tweets not stored in file
         if not os.path.exists(file_path):
 
@@ -66,7 +66,7 @@ def storeUserTweets(username):
             # return as error in future
             # print("User tweets file already exists")
             return False
-        #-------------------------------------------------------------------------#
+        
     else:
         # user has no tweets
         # print("No tweets")
@@ -132,15 +132,22 @@ def main(username):
 
 def tweetsToDataFrame(tweets):
     df = pd.DataFrame(data = [tweet.text for tweet in tweets], columns=['tweets'])
-        
+    
+    df['retweet_count'] = np.array([tweet.public_metrics.get('retweet_count') for tweet in tweets])
+    df['reply_count'] = np.array([tweet.public_metrics.get('reply_count') for tweet in tweets])
+    df['like_count'] = np.array([tweet.public_metrics.get('like_count') for tweet in tweets])
+    df['quote_count'] = np.array([tweet.public_metrics.get('quote_count') for tweet in tweets])
+    
     return df
 
 def main2(username):
     user = getUserInfo(username)  # get user info, such as id
     user_tweets = getUserRecentTweets(user.id)
     
+    #print(dir(user_tweets.data)) # What attributes exist
+    #print(user_tweets.data[0].public_metrics)
     df = tweetsToDataFrame(user_tweets.data)
-    print(df.head(10))
+    # print(df.head(100)) # print dataframe
 
 if __name__ == "__main__":
     main2('finesstv')
