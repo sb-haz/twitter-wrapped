@@ -4,7 +4,8 @@ import twitter_credentials  # api keys
 import os  # for os file
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator  # wordcloud
 from PIL import Image  # load image
-import numpy as np  # get colour of image
+import numpy as np  # numerical python library
+import pandas as pd  # store content into dataframes
 
 import sys  # running python file with args, remove later
 
@@ -28,12 +29,13 @@ def getUserInfo(user):
 # Tweets
 def getUserRecentTweets(id):
     client = getClient()
-    user_tweets = client.get_users_tweets(id=id,
-                                          tweet_fields=['public_metrics'],
-                                          exclude=['retweets', 'replies'],
-                                          max_results=100,
+    user_tweets = client.get_users_tweets(id = id,
+                                          tweet_fields = ['public_metrics'],
+                                          exclude = ['retweets', 'replies'],
+                                          max_results = 10,
                                           #start_time = '2021-09-02T00:00:00.000Z'
                                           )
+    #print(user_tweets.data[0].public_metrics)
     return user_tweets
 
 
@@ -46,7 +48,7 @@ def storeUserTweets(username):
 
     # user has tweets
     if len(user_tweets.data) > 0:
-
+        #-------------------------------------------------------------------------#
         # user tweets not stored in file
         if not os.path.exists(file_path):
 
@@ -55,7 +57,7 @@ def storeUserTweets(username):
 
             # write each tweet into new file
             for x in user_tweets.data:
-                file.write(clean_tweet(str(x)) + '\n')
+                file.write(cleanTweet(str(x)) + '\n')
 
             file.close()
             return True
@@ -64,18 +66,18 @@ def storeUserTweets(username):
             # return as error in future
             # print("User tweets file already exists")
             return False
-
+        #-------------------------------------------------------------------------#
     else:
         # user has no tweets
         # print("No tweets")
         return False
 
 
-def clean_tweet(tweet):
-    
+def cleanTweet(tweet):
+
     # replace ’ with '
     tweet = tweet.replace('’', '\'')
-    
+
     # credit freeCodeCamp.org - removes special characters and hyperlinks
     # modified to allow '
     return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z' \t])|(\w+:\/\/\S+)", " ", tweet).split())
@@ -83,7 +85,7 @@ def clean_tweet(tweet):
 
 # Generating word cloud image
 def createUserWordCloud(username):
-    
+
     # Content-related
     text = open('user_tweets\\' + username + '.txt',
                 'r', encoding='utf-8').read()
@@ -122,12 +124,24 @@ def createUserWordCloud(username):
 
 
 def main(username):
-    
+
     # Get user tweets
     # Create word cloud
     if storeUserTweets(username):
         createUserWordCloud(username)
 
+def tweetsToDataFrame(tweets):
+    df = pd.DataFrame(data = [tweet.text for tweet in tweets], columns=['tweets'])
+        
+    return df
+
+def main2(username):
+    user = getUserInfo(username)  # get user info, such as id
+    user_tweets = getUserRecentTweets(user.id)
+    
+    df = tweetsToDataFrame(user_tweets.data)
+    print(df.head(10))
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main2('finesstv')
+    #main(sys.argv[1])
