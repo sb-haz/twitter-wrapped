@@ -30,7 +30,7 @@ def getUserInfo(user):
 def getUserRecentTweets(id):
     client = getClient()
     user_tweets = client.get_users_tweets(id = id,
-                                          tweet_fields = ['public_metrics'],
+                                          tweet_fields = ['public_metrics,created_at'],
                                           exclude = ['retweets', 'replies'],
                                           max_results = 100,
                                           #start_time = '2021-09-02T00:00:00.000Z'
@@ -137,6 +137,7 @@ def tweetsToDataFrame(tweets):
     df['reply_count'] = np.array([tweet.public_metrics.get('reply_count') for tweet in tweets])
     df['like_count'] = np.array([tweet.public_metrics.get('like_count') for tweet in tweets])
     df['quote_count'] = np.array([tweet.public_metrics.get('quote_count') for tweet in tweets])
+    df['created_at'] = np.array([tweet.created_at for tweet in tweets])
     
     return df
 
@@ -148,12 +149,13 @@ def main2(username):
     #print(user_tweets.data[0].public_metrics)
     
     df = tweetsToDataFrame(user_tweets.data)
-    # print(df.head(100)) # print dataframe
+    print(df.head(100)) # print dataframe
     
     print('retweets ', np.max(df['retweet_count']))
     print('reply ', np.max(df['reply_count']))
     print('like ', np.max(df['like_count']))
-    print('quote ', np.max(df['quote_count'])) 
+    print('quote ', np.max(df['quote_count']))
+    print('created_at ', np.max(df['created_at'])) 
 
 if __name__ == "__main__":
     main2('finesstv')
