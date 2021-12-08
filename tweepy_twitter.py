@@ -159,6 +159,72 @@ def analyse_sentiment(tweet):
         return -1
 
 
+#def most_retweeted_image():
+    #
+         
+def sentiment_image(username, sentiment):
+    if sentiment > 10:
+        sentiment_class = "VERY HAPPY!"
+    elif sentiment > 5:
+        sentiment_class = "HAPPY"
+    elif sentiment > 0:
+        sentiment_class = "BARELY HAPPY"
+    elif sentiment > -5:
+        sentiment_class = "DOWN BAD"
+    else:
+        sentiment_class = "DOWN TERRIBLE"
+
+    img = Image.open("img/templates/pink.png")
+    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
+    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
+    
+    draw = ImageDraw.Draw(img)
+    
+    text = "Emotionally you were"
+    text2 = sentiment_class
+    
+    draw.text((150,150), text, (0,0,0), font=font1)
+    draw.text((200,210), text2, (0,0,0), font=font2)
+    img.save("test.png")
+    
+    
+def highest_metrics_image(username,
+                          most_likes,
+                          most_retweets,
+                          most_quotes):
+        
+    img = Image.open("img/templates/pink.png")
+    draw = ImageDraw.Draw(img)
+    
+    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
+    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
+        
+    liked_text_1 = "Your most liked tweet had "
+    liked_text_2 = str(most_likes)
+    liked_text_3 = " likes"
+    
+    retweet_text_1 = "Your most retweeted tweet had "
+    retweet_text_2 = str(most_retweets)
+    retweet_text_3 = " retweets"
+    
+    quote_text_1 = "Your most quoted tweet had "
+    quote_text_2 = str(most_quotes)
+    quote_text_3 = " quotes"
+    
+    draw.text((150,150), liked_text_1, (0,0,0), font=font1)
+    draw.text((200,210), liked_text_2, (0,0,0), font=font2)
+    draw.text((300,210), liked_text_3, (0,0,0), font=font1)
+    
+    draw.text((150,150+200), retweet_text_1, (0,0,0), font=font1)
+    draw.text((200,210+200), retweet_text_2, (0,0,0), font=font2)
+    draw.text((300,210+200), retweet_text_3, (0,0,0), font=font1)
+    
+    draw.text((150,150+200+200), quote_text_1, (0,0,0), font=font1)
+    draw.text((200,210+200+200), quote_text_2, (0,0,0), font=font2)
+    draw.text((300,210+200+200), quote_text_3, (0,0,0), font=font1)
+    
+    img.save("img/outputs/highest_metrics/test.png")
+    
 def main(username):
     user = getUserInfo(username)  # get user info, such as id
     user_tweets = getUserRecentTweets(user.id)  # get tweets of user by id
@@ -187,44 +253,22 @@ def main(username):
     #print('like ', np.max(df['like_count']))
     #print('quote ', np.max(df['quote_count']))
     #print('created_at ', np.max(df['created_at']))
-
+    #
     # print average sentiment
-    print(np.average(df['sentiment']) * 100)
+    # print(np.average(df['sentiment']) * 100)
+    
     # sentiment to happiness
     sentiment = np.average(df['sentiment']) * 100
-    sentiment_image(sentiment)
-   
-
-#def most_retweeted_image():
-    #
-         
-def sentiment_image(sentiment):
-    if sentiment > 10:
-        sentiment_class = "VERY HAPPY!"
-    elif sentiment > 5:
-        sentiment_class = "HAPPY"
-    elif sentiment > 0:
-        sentiment_class = "BARELY HAPPY"
-    elif sentiment > -5:
-        sentiment_class = "DOWN BAD"
-    else:
-        sentiment_class = "DOWN TERRIBLE"
-
-    img = Image.open("img/templates/pink.png")
-    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
-    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
+    sentiment_image(username, sentiment)
     
-    draw = ImageDraw.Draw(img)
+    # metrics 
+    most_likes = np.max(df['like_count'])
+    most_retweets = np.max(df['retweet_count'])
+    most_quotes = np.max(df['quote_count'])
     
-    text = "Emotionally you were"
-    text2 = sentiment_class
-    
-    draw.text((150,150), text, (0,0,0), font=font1)
-    draw.text((200,210), text2, (0,0,0), font=font2)
-    img.save("test.png")
+    highest_metrics_image(username, most_likes,most_retweets,most_quotes)
     
     
 if __name__ == "__main__":
-    #main2('twitter')
-    #main(sys.argv[1])
-    sentiment_image(11)
+    main(sys.argv[1])
+    #sentiment_image(11)
