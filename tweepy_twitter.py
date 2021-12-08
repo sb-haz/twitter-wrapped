@@ -190,7 +190,7 @@ def sentiment_image(username, sentiment):
     draw.text((350,250), text_3, (0,0,0), font=font1)
     draw.text((150,375), text_4, (0,0,0), font=font2)
     
-    img.save("img/outputs/sentiment/' + username + '.png")
+    img.save("img/outputs/sentiment/" + username + ".png")
     
     
 def highest_metrics_image(username,
@@ -231,7 +231,7 @@ def highest_metrics_image(username,
     draw.text((150,325+200+200), quote_text_2, (0,0,0), font=font2)
     draw.text((300,325+200+200), quote_text_3, (0,0,0), font=font1)
     
-    img.save("img/outputs/highest_metrics/' + username + '.png")
+    img.save("img/outputs/highest_metrics/" + username + ".png")
     
 def main(username):
     user = getUserInfo(username)  # get user info, such as id
