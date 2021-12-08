@@ -176,16 +176,21 @@ def sentiment_image(username, sentiment):
 
     img = Image.open("img/templates/pink.png")
     font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
-    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
+    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 100)
     
     draw = ImageDraw.Draw(img)
     
-    text = "Emotionally you were"
-    text2 = sentiment_class
+    text_1 = "Emotionally your tweets scored"
+    text_2 = str(sentiment)
+    text_3 = "meaning you were..."
+    text_4 = sentiment_class
+    #         > X   Y ^
+    draw.text((150,150), text_1, (0,0,0), font=font1)
+    draw.text((150,250), text_2, (0,0,0), font=font2)
+    draw.text((350,250), text_3, (0,0,0), font=font1)
+    draw.text((150,375), text_4, (0,0,0), font=font2)
     
-    draw.text((150,150), text, (0,0,0), font=font1)
-    draw.text((200,210), text2, (0,0,0), font=font2)
-    img.save("test.png")
+    img.save("img/outputs/sentiment/' + username + '.png")
     
     
 def highest_metrics_image(username,
@@ -198,7 +203,8 @@ def highest_metrics_image(username,
     
     font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
     font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
-        
+    
+    title = username + ", your metrics"
     liked_text_1 = "Your most liked tweet had "
     liked_text_2 = str(most_likes)
     liked_text_3 = " likes"
@@ -211,19 +217,21 @@ def highest_metrics_image(username,
     quote_text_2 = str(most_quotes)
     quote_text_3 = " quotes"
     
-    draw.text((150,150), liked_text_1, (0,0,0), font=font1)
-    draw.text((200,210), liked_text_2, (0,0,0), font=font2)
-    draw.text((300,210), liked_text_3, (0,0,0), font=font1)
+    draw.text((120,100), title, (0,0,0), font=font2)
     
-    draw.text((150,150+200), retweet_text_1, (0,0,0), font=font1)
-    draw.text((200,210+200), retweet_text_2, (0,0,0), font=font2)
-    draw.text((300,210+200), retweet_text_3, (0,0,0), font=font1)
+    draw.text((150,250), liked_text_1, (0,0,0), font=font1)
+    draw.text((150,325), liked_text_2, (0,0,0), font=font2)
+    draw.text((300,325), liked_text_3, (0,0,0), font=font1)
     
-    draw.text((150,150+200+200), quote_text_1, (0,0,0), font=font1)
-    draw.text((200,210+200+200), quote_text_2, (0,0,0), font=font2)
-    draw.text((300,210+200+200), quote_text_3, (0,0,0), font=font1)
+    draw.text((150,250+200), retweet_text_1, (0,0,0), font=font1)
+    draw.text((150,325+200), retweet_text_2, (0,0,0), font=font2)
+    draw.text((300,325+200), retweet_text_3, (0,0,0), font=font1)
     
-    img.save("img/outputs/highest_metrics/test.png")
+    draw.text((150,250+200+200), quote_text_1, (0,0,0), font=font1)
+    draw.text((150,325+200+200), quote_text_2, (0,0,0), font=font2)
+    draw.text((300,325+200+200), quote_text_3, (0,0,0), font=font1)
+    
+    img.save("img/outputs/highest_metrics/' + username + '.png")
     
 def main(username):
     user = getUserInfo(username)  # get user info, such as id
