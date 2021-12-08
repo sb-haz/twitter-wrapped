@@ -242,9 +242,28 @@ def add_title_to_word_cloud(username):
     
     title = username + "'s word cloud"
     
-    draw.text((100,50), title, (213,226,26), font=font2)
+    draw.text((250,50), title, (213,226,26), font=font2)
 
     img.save("img/outputs/word_clouds/" + username + ".png")
+    
+def most_bangers_image(username, liked_rank_1, liked_rank_2, liked_rank_3):
+    img = Image.open("img/templates/black.png")
+    
+    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
+    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 100)
+    
+    draw = ImageDraw.Draw(img)
+    
+    text_1 = "You had " + str(liked_rank_1) + " good tweets (100+ likes)" 
+    text_2 = "You had " + str(liked_rank_2) + " banger tweets (1k+ likes)" 
+    text_3 = "You had " + str(liked_rank_3) + " huge tweets (10k+ likes)" 
+   
+    #         > X   Y ^
+    draw.text((50,150), text_1, (37,172,130), font=font1)
+    draw.text((50,250), text_2, (37,172,130), font=font1)
+    draw.text((50,350), text_3, (37,172,130), font=font1)
+    
+    img.save("img/outputs/big_tweets/" + username + ".png")
     
     
 def main(username):
@@ -290,7 +309,13 @@ def main(username):
     
     highest_metrics_image(username, most_likes,most_retweets,most_quotes)
     
+    liked_rank_1 = len(df[df['like_count'] > 100])
+    liked_rank_2 = len(df[df['like_count'] > 1000])
+    liked_rank_3 = len(df[df['like_count'] > 10000])
+    most_bangers_image(username, liked_rank_1, liked_rank_2, liked_rank_3)
+    
     add_title_to_word_cloud(username)
+    
     
 if __name__ == "__main__":
     main(sys.argv[1])
