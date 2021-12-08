@@ -194,7 +194,10 @@ def main(username):
     sentiment = np.average(df['sentiment']) * 100
     sentiment_image(sentiment)
    
-        
+
+#def most_retweeted_image():
+    #
+         
 def sentiment_image(sentiment):
     if sentiment > 10:
         sentiment_class = "VERY HAPPY!"
@@ -207,17 +210,21 @@ def sentiment_image(sentiment):
     else:
         sentiment_class = "DOWN TERRIBLE"
 
-    img = Image.open("white.png")
-    font = ImageFont.truetype("arial.ttf", 24)
+    img = Image.open("img/templates/pink.png")
+    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
+    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
     
     draw = ImageDraw.Draw(img)
     
-    text = "Hello World"
+    text = "Emotionally you were"
+    text2 = sentiment_class
     
-    draw.text((0,150), text, (0,0,0), font=font)
+    draw.text((150,150), text, (0,0,0), font=font1)
+    draw.text((200,210), text2, (0,0,0), font=font2)
     img.save("test.png")
     
     
 if __name__ == "__main__":
     #main2('twitter')
-    main(sys.argv[1])
+    #main(sys.argv[1])
+    sentiment_image(11)
