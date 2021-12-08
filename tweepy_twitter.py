@@ -122,7 +122,7 @@ def createUserWordCloud(username):
     ## wordCloud.recolor(color_func = image_colours)
 
     # Store to file
-    wordCloud.to_file('img\\outputs\\word_cloud\\' + username + '.png')
+    wordCloud.to_file('img\\outputs\\word_clouds\\' + username + '.png')
 
 # Add public metrics to dataframe
 def tweetsToDataFrame(tweets):

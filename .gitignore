@@ -4,9 +4,10 @@ twitter_credentials.py
 # User tweets / word clouds
 # Remove contents but keep folder
 user_tweets/*
-word_cloud_output/*
+img/outputs/word_clouds/*
+
 !user_tweets/.gitkeep
-!word_cloud_output/.gitkeep
+!img/outputs/word_clouds/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
