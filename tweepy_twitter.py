@@ -174,7 +174,7 @@ def sentiment_image(username, sentiment):
     else:
         sentiment_class = "DOWN TERRIBLE"
 
-    img = Image.open("img/templates/pink.png")
+    img = Image.open("img/templates/black.png")
     font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
     font2 = ImageFont.truetype("fonts/theboldfont.ttf", 100)
     
@@ -185,10 +185,10 @@ def sentiment_image(username, sentiment):
     text_3 = "meaning you were..."
     text_4 = sentiment_class
     #         > X   Y ^
-    draw.text((150,150), text_1, (0,0,0), font=font1)
-    draw.text((150,250), text_2, (0,0,0), font=font2)
-    draw.text((350,250), text_3, (0,0,0), font=font1)
-    draw.text((150,375), text_4, (0,0,0), font=font2)
+    draw.text((150,150), text_1, (37,172,130), font=font1)
+    draw.text((150,250), text_2, (213,226,26), font=font2)
+    draw.text((350,250), text_3, (37,172,130), font=font1)
+    draw.text((150,375), text_4, (213,226,26), font=font2)
     
     img.save("img/outputs/sentiment/" + username + ".png")
     
@@ -198,7 +198,7 @@ def highest_metrics_image(username,
                           most_retweets,
                           most_quotes):
         
-    img = Image.open("img/templates/pink.png")
+    img = Image.open("img/templates/black.png")
     draw = ImageDraw.Draw(img)
     
     font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
@@ -217,21 +217,35 @@ def highest_metrics_image(username,
     quote_text_2 = str(most_quotes)
     quote_text_3 = " quotes"
     
-    draw.text((120,100), title, (0,0,0), font=font2)
+    draw.text((120,100), title, (213,226,26), font=font2)
     
-    draw.text((150,250), liked_text_1, (0,0,0), font=font1)
-    draw.text((150,325), liked_text_2, (0,0,0), font=font2)
-    draw.text((300,325), liked_text_3, (0,0,0), font=font1)
+    draw.text((150,250), liked_text_1, (37,172,130), font=font1)
+    draw.text((150,325), liked_text_2, (213,226,26), font=font2)
+    draw.text((300,325), liked_text_3, (37,172,130), font=font1)
     
-    draw.text((150,250+200), retweet_text_1, (0,0,0), font=font1)
-    draw.text((150,325+200), retweet_text_2, (0,0,0), font=font2)
-    draw.text((300,325+200), retweet_text_3, (0,0,0), font=font1)
+    draw.text((150,250+200), retweet_text_1, (37,172,130), font=font1)
+    draw.text((150,325+200), retweet_text_2, (213,226,26), font=font2)
+    draw.text((300,325+200), retweet_text_3, (37,172,130), font=font1)
     
-    draw.text((150,250+200+200), quote_text_1, (0,0,0), font=font1)
-    draw.text((150,325+200+200), quote_text_2, (0,0,0), font=font2)
-    draw.text((300,325+200+200), quote_text_3, (0,0,0), font=font1)
+    draw.text((150,250+200+200), quote_text_1, (37,172,130), font=font1)
+    draw.text((150,325+200+200), quote_text_2, (213,226,26), font=font2)
+    draw.text((300,325+200+200), quote_text_3, (37,172,130), font=font1)
     
     img.save("img/outputs/highest_metrics/" + username + ".png")
+    
+    
+def add_title_to_word_cloud(username):
+    img = Image.open("img/outputs/word_clouds/" + username + ".png")
+    draw = ImageDraw.Draw(img)
+    
+    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 50)
+    
+    title = username + "'s word cloud"
+    
+    draw.text((100,50), title, (213,226,26), font=font2)
+
+    img.save("img/outputs/word_clouds/" + username + ".png")
+    
     
 def main(username):
     user = getUserInfo(username)  # get user info, such as id
@@ -276,6 +290,7 @@ def main(username):
     
     highest_metrics_image(username, most_likes,most_retweets,most_quotes)
     
+    add_title_to_word_cloud(username)
     
 if __name__ == "__main__":
     main(sys.argv[1])
