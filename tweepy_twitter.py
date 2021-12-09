@@ -155,7 +155,7 @@ def analyse_sentiment(tweet):
     else:
         return -1
 
- 
+
 def generate_image_one(username, sentiment):
     
     # Generate word cloud
@@ -193,57 +193,59 @@ def generate_image_one(username, sentiment):
     draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
     #draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
     
-    # Sentiment
-    # Sentiment title
-    sentiment_title = ["But were you happy?"]
-    
-    # Width to right align
-    title_width_0, num_height_0 = font["title"].getsize(sentiment_title[0])
-
-     # Move base-level y-pos down
-    y_pos = image_height/1.4
-    
-    # Draw sentiment title
-    temp_x_pos = image_width - x_pos - title_width_0
-    draw.text((temp_x_pos, y_pos), sentiment_title[0], font_colour["title"], font = font["title"])
+    # Sentiment #
     
     # Classify based on numerical sentiment value (-100 to 100)
     if sentiment > 10:
         sentiment_class = "VERY HAPPY!"
         sentiment_emoji = Image.open("img/emojis/grinning-face-with-sweat_1f605.png")
     elif sentiment > 5:
-        sentiment_class = "HAPPY"
+        sentiment_class = "HAPPY!"
         sentiment_emoji = Image.open("img/emojis/beaming-face-with-smiling-eyes_1f601.png")
     elif sentiment > 0:
-        sentiment_class = "BARELY HAPPY"
+        sentiment_class = "BARELY HAPPY..."
         sentiment_emoji = Image.open("img/emojis/emoji-upside-down-face_1f643.png")
     elif sentiment > -5:
-        sentiment_class = "DOWN BAD"
+        sentiment_class = "SAD..."
         sentiment_emoji = Image.open("img/emojis/face-with-head-bandage_1f915.png")
     else:
-        sentiment_class = "DOWN TERRIBLE"
+        sentiment_class = "DOWN TERRIBLE..."
         sentiment_emoji = Image.open("img\emojis\sleepy-face_1f62a.png")
     
+    # Resize emoji
+    (emoji_width, emoji_height) = (sentiment_emoji.width/2.25, sentiment_emoji.height/2.25)
+    sentiment_emoji = sentiment_emoji.resize((int(emoji_width), int(emoji_height)))
     
+    # Sentiment title
+    sentiment_title = ["But were you happy?"]
     
+    # Sentiment text
     sentiment_text = ["Emotionally your tweets scored", str(sentiment), " meaning you were...", sentiment_class]
     
+    # Move base-level y-pos down
+    y_pos = image_height/1.5
+    
+    # Draw sentiment title, right align
+    title_width, title_height = font["title"].getsize(sentiment_title[0])
+    temp_x_pos = image_width - x_pos - title_width
+    draw.text((temp_x_pos, y_pos), sentiment_title[0], font_colour["title"], font = font["title"])
+            
     # Draw sentiment text
-    draw.text((x_pos, y_pos + spacer * 2), sentiment_text[0], font_colour["text"], font = font["text"])
+    draw.text((x_pos, y_pos + spacer), sentiment_text[0], font_colour["text"], font = font["text"])
     
     # Draw sentiment value
-    draw.text((x_pos, y_pos + spacer * 3), sentiment_text[1], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer * 2), sentiment_text[1], font_colour["number"], font = font["number"])
     
     # Move text to be positioned after value number
     num_width, num_height = font["number"].getsize(sentiment_text[1])
-    draw.text((x_pos + num_width + 25, y_pos + spacer * 3.25), sentiment_text[2], font_colour["text"], font = font["text"])
+    draw.text((x_pos + num_width + 25, y_pos + spacer * 2.25), sentiment_text[2], font_colour["text"], font = font["text"])
     
     # Draw sentiment class
-    draw.text((x_pos, y_pos + spacer * 4.5), sentiment_text[3], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer * 3.5), sentiment_text[3], font_colour["number"], font = font["number"])
     
     # Draw sentiment emoji after sentiment class
     txt_width, txt_height = font["number"].getsize(sentiment_text[3])
-    img.paste(sentiment_emoji, (x_pos + txt_width + 25, int(y_pos + spacer * 4.5)))
+    img.paste(sentiment_emoji, (x_pos + txt_width + 25, int(y_pos + spacer * 3.5)))
     
     # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
