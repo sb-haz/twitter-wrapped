@@ -1,4 +1,5 @@
 from PIL import Image,ImageFont,ImageDraw
+import textwrap
 from wordcloud import WordCloud, STOPWORDS
 import tweepy, twitter_credentials, re, os
 import numpy as np  # numerical python library
@@ -89,7 +90,7 @@ def createUserWordCloud(username):
     stopwords = STOPWORDS.add('gt')
 
     # Mask
-    custom_mask = np.array(Image.open('masks\\twitter_logo.png'))
+    custom_mask = np.array(Image.open('img\\masks\\twitter_logo.png'))
     font = 'fonts\\SFProDisplay-Light.ttf'
 
     # WordCloud attributes
@@ -116,6 +117,7 @@ def createUserWordCloud(username):
 
     # Store to file
     wordCloud.to_file('img\\outputs\\word_clouds\\' + username + '.png')
+
 
 # Add public metrics to dataframe
 def tweetsToDataFrame(tweets):
@@ -187,48 +189,6 @@ def sentiment_image(username, sentiment):
     img.save("img/outputs/sentiment/" + username + ".png")
     
 
-# Create metrics-related image
-def highest_metrics_image(username,
-                          most_likes,
-                          most_retweets,
-                          most_quotes):
-        
-    img = Image.open("img/templates/black.png")
-    draw = ImageDraw.Draw(img)
-    
-    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
-    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
-    
-    title = username + ", your metrics"
-    liked_text_1 = "Your most liked tweet had "
-    liked_text_2 = str(most_likes)
-    liked_text_3 = " likes"
-    
-    retweet_text_1 = "Your most retweeted tweet had "
-    retweet_text_2 = str(most_retweets)
-    retweet_text_3 = " retweets"
-    
-    quote_text_1 = "Your most quoted tweet had "
-    quote_text_2 = str(most_quotes)
-    quote_text_3 = " quotes"
-    
-    draw.text((120,100), title, (213,226,26), font = font2)
-    
-    draw.text((150,250), liked_text_1, (37,172,130), font = font1)
-    draw.text((150,325), liked_text_2, (213,226,26), font = font2)
-    draw.text((300,325), liked_text_3, (37,172,130), font = font1)
-    
-    draw.text((150,250+200), retweet_text_1, (37,172,130), font = font1)
-    draw.text((150,325+200), retweet_text_2, (213,226,26), font = font2)
-    draw.text((300,325+200), retweet_text_3, (37,172,130), font = font1)
-    
-    draw.text((150,250+200+200), quote_text_1, (37,172,130), font = font1)
-    draw.text((150,325+200+200), quote_text_2, (213,226,26), font = font2)
-    draw.text((300,325+200+200), quote_text_3, (37,172,130), font = font1)
-    
-    img.save("img/outputs/highest_metrics/" + username + ".png")
-    
-
 # Modify word cloud image to add title text
 def add_title_to_word_cloud(username):
     img = Image.open("img/outputs/word_clouds/" + username + ".png")
@@ -236,13 +196,21 @@ def add_title_to_word_cloud(username):
     
     font2 = ImageFont.truetype("fonts/theboldfont.ttf", 50)
     
-    title = username + "'s word cloud"
+    title = username + "'s Tweets Visualized"
     
     draw.text((250,50), title, (213,226,26), font = font2)
 
     img.save("img/outputs/word_clouds/" + username + ".png")
     
-    
+        
+def generate_image_one():
+    return
+
+
+
+
+
+
 # Create tweets likes performance image
 def likes_performance_image(username,
                             liked_rank_1,
@@ -263,8 +231,98 @@ def likes_performance_image(username,
     draw.text((50,250), text_2, (37,172,130), font = font1)
     draw.text((50,350), text_3, (37,172,130), font = font1)
     
-    img.save("img/outputs/big_tweets/" + username + ".png")
+    img.save("img/outputs/likes_performance/" + username + ".png")
     
+
+
+
+
+
+
+
+
+# Create metrics-related image
+def highest_metrics_image(username,
+                          most_likes,
+                          most_retweets,
+                          most_quotes):
+    
+    # Open black image
+    img = Image.open("img/templates/black.png")
+    draw = ImageDraw.Draw(img)
+    
+    # Template size
+    image_width, image_height = img.size
+    
+    font = {
+        "title": ImageFont.truetype("fonts/theboldfont.ttf", 80),
+        "text": ImageFont.truetype("fonts/theboldfont.ttf", 80),
+        "number": ImageFont.truetype("fonts/theboldfont.ttf", 80)
+    }
+
+    font_colour = {
+        "title": (213, 226, 26),
+        "text": (37,172,130),
+        "number": (213, 226, 26)
+    }
+
+    # Text position
+    x_pos = 100
+    y_pos = 100
+    spacer = 100
+    
+    # Text content
+    title_text = [username + ",", "Your Popular Tweets."]
+    metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
+    metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
+  
+    # Draw title
+    draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
+    draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
+    
+    # Draw metric text
+    draw.text((x_pos, y_pos + spacer*3), metrics_text[0], font_colour["text"], font = font["text"])
+    draw.text((x_pos, y_pos + spacer*4.5), metrics_text[1], font_colour["text"], font = font["text"])
+    draw.text((x_pos, y_pos + spacer*6), metrics_text[2], font_colour["text"], font = font["text"])
+        
+    # Width to right align
+    num_width_0, num_height_0 = font["number"].getsize(metrics_values[0])
+    num_width_1, num_height_1 = font["number"].getsize(metrics_values[1])
+    num_width_2, num_height_2 = font["number"].getsize(metrics_values[2])
+    
+    # Draw metric values
+    temp_x_pos = image_width - x_pos - num_width_0
+    draw.text((temp_x_pos, y_pos + spacer*3), metrics_values[0], font_colour["number"], font = font["number"])
+    
+    temp_x_pos = image_width - x_pos - num_width_1
+    draw.text((temp_x_pos, y_pos + spacer*4.5), metrics_values[1], font_colour["number"], font = font["number"])
+    
+    temp_x_pos = image_width - x_pos - num_width_2
+    draw.text((temp_x_pos, y_pos + spacer*6), metrics_values[2], font_colour["number"], font = font["number"])
+  
+  
+  
+  
+    
+    img.save("img/outputs/highest_metrics/" + username + ".png")
+    print("Done")
+    
+    
+    
+def generate_image_two(username,
+                       most_likes,
+                       most_retweets,
+                       most_quotes,
+                       num_likes_100,
+                       num_likes_1000,
+                       num_likes_10000):
+    
+    img = Image.open("img/templates/black.png")
+    draw = ImageDraw.Draw(img)
+    
+    title_font = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
+    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
+    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
     
 def main(username):
     user = getUserInfo(username)  # get user info, such as id
@@ -306,15 +364,16 @@ def main(username):
     highest_metrics_image(username, most_likes, most_retweets, most_quotes)
     
     # Generate likes performance image
-    liked_rank_1 = len(df[df['like_count'] > 100])
-    liked_rank_2 = len(df[df['like_count'] > 1000])
-    liked_rank_3 = len(df[df['like_count'] > 10000])
+    num_likes_100 = len(df[df['like_count'] > 100])
+    num_likes_1000 = len(df[df['like_count'] > 1000])
+    num_likes_10000 = len(df[df['like_count'] > 10000])
     
-    likes_performance_image(username, liked_rank_1, liked_rank_2, liked_rank_3)
+    likes_performance_image(username, num_likes_100, num_likes_1000, num_likes_1000)
     
     # Update title of word cloud generated image
     add_title_to_word_cloud(username)
     
     
 if __name__ == "__main__":
-    main(sys.argv[1])
+    #main(sys.argv[1])
+    highest_metrics_image("Talal916",787,16,292)
