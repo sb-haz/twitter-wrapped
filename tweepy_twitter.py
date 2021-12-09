@@ -281,8 +281,8 @@ def highest_metrics_image(username,
     # lp = 'likes performance'
     lp_title_text = ["Any Bangers?"]
     
-    lp_text = ["Did okay.", "Banged.", "Blew up."]
-    lp_values = [str(likes_performance[100]), str(likes_performance[1000]), str(likes_performance[10000])]
+    lp_text = ["> 100 likes.", "> 1k likes", "> 10k likes!"]
+    lp_values = [str(likes_performance[100]) + " Tweets", str(likes_performance[1000]) + " Tweets", str(likes_performance[10000]) + " Tweets"]
   
     # Draw title
     draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
@@ -335,15 +335,13 @@ def highest_metrics_image(username,
     draw.text((x_pos, y_pos + spacer*2), lp_values[0], font_colour["number"], font = font["number"])
     draw.text((x_pos, y_pos + spacer*3.5), lp_values[1], font_colour["number"], font = font["number"])
     draw.text((x_pos, y_pos + spacer*5), lp_values[2], font_colour["number"], font = font["number"])
-      
+    
     img.save("img/outputs/highest_metrics/" + username + ".png")
     print("Done")
     
     
     
-    
-    
-    
+  
     
 def generate_image_two(username,
                        most_likes,
