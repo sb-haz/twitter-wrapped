@@ -1,18 +1,13 @@
 from PIL import Image,ImageFont,ImageDraw
-import tweepy  # tweepy
-import re  # regex
-import twitter_credentials  # api keys
-import os  # for os file
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator  # wordcloud
-from PIL import Image  # load image
+from wordcloud import WordCloud, STOPWORDS
+import tweepy, twitter_credentials, re, os
 import numpy as np  # numerical python library
 import pandas as pd  # store content into dataframes
 from textblob import TextBlob  # sentiment analysis
-
 import sys  # running python file with args, remove later
 
 
-# Client
+# Twitter API Client
 def getClient():
     client = tweepy.Client(bearer_token=twitter_credentials.bearer_token,
                            consumer_key=twitter_credentials.consumer_key,
@@ -21,14 +16,14 @@ def getClient():
     return client
 
 
-# User info
+# Return user information
 def getUserInfo(user):
     client = getClient()
     user = client.get_user(username=user)
     return user.data
 
 
-# Tweets
+# Return recent tweets of user
 def getUserRecentTweets(id):
     client = getClient()
     user_tweets = client.get_users_tweets(id=id,
@@ -41,7 +36,7 @@ def getUserRecentTweets(id):
     return user_tweets
 
 
-# Get user recent tweets
+# Store recent user tweets in file
 def storeUserTweets(username, user_tweets):
 
     file_path = 'user_tweets/' + username + '.txt'
@@ -73,15 +68,13 @@ def storeUserTweets(username, user_tweets):
         return False
 
 
+# Remove special characters and hyperlinks
+# Modified code from freeCodeCamp.org
 def cleanTweet(tweet):
 
     # replace ’ with '
     tweet = tweet.replace('’', '\'')
 
-    """
-    credit freeCodeCamp.org - removes special characters and hyperlinks
-    modified to allow '
-    """
     return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z' \t])|(\w+:\/\/\S+)", " ", tweet).split())
 
 
@@ -101,16 +94,16 @@ def createUserWordCloud(username):
 
     # WordCloud attributes
     wordCloud = WordCloud(
-        font_path=font,
+        font_path = font,
+        mask = custom_mask,
+        background_color = 'black',
+        stopwords = stopwords,
+        height = 1000,
+        width = 1000,
+        include_numbers = False,  # include numbers
         #margin = 10,
-        mask=custom_mask,
-        background_color='black',
         #background_color = None,
         #mode = 'RGBA',
-        stopwords=stopwords,
-        height=1000,
-        width=1000,
-        include_numbers=False,  # include numbers
         # color_func = lambda *args, **kwargs: (255,255,255) # text colour
     )
 
@@ -126,9 +119,12 @@ def createUserWordCloud(username):
 
 # Add public metrics to dataframe
 def tweetsToDataFrame(tweets):
+    
+    # Create new dataframe with tweet text
     df = pd.DataFrame(
         data=[tweet.text for tweet in tweets], columns=['tweets'])
 
+    # Create columns for metrics
     df['retweet_count'] = np.array(
         [tweet.public_metrics.get('retweet_count') for tweet in tweets])
     df['reply_count'] = np.array(
@@ -142,12 +138,11 @@ def tweetsToDataFrame(tweets):
     return df
 
 
-"""
- Sentiment analysis, returns 
- -1 for negative
- 0 for neutral
- 1 for positive
-"""
+
+# Sentiment analysis, returns 
+# -1 for negative
+# 0 for neutral
+# 1 for positive
 def analyse_sentiment(tweet):
     analysis = TextBlob(cleanTweet(tweet))
     
@@ -158,11 +153,10 @@ def analyse_sentiment(tweet):
     else:
         return -1
 
-
-#def most_retweeted_image():
-    #
-         
+# Create sentiment-related image
 def sentiment_image(username, sentiment):
+    
+    # Classify based on numerical sentiment value (-100 to 100)
     if sentiment > 10:
         sentiment_class = "VERY HAPPY!"
     elif sentiment > 5:
@@ -184,7 +178,7 @@ def sentiment_image(username, sentiment):
     text_2 = str(sentiment)
     text_3 = "meaning you were..."
     text_4 = sentiment_class
-    #         > X   Y ^
+
     draw.text((150,150), text_1, (37,172,130), font=font1)
     draw.text((150,250), text_2, (213,226,26), font=font2)
     draw.text((350,250), text_3, (37,172,130), font=font1)
@@ -192,7 +186,8 @@ def sentiment_image(username, sentiment):
     
     img.save("img/outputs/sentiment/" + username + ".png")
     
-    
+
+# Create metrics-related image
 def highest_metrics_image(username,
                           most_likes,
                           most_retweets,
@@ -233,7 +228,8 @@ def highest_metrics_image(username,
     
     img.save("img/outputs/highest_metrics/" + username + ".png")
     
-    
+
+# Modify word cloud image to add title text
 def add_title_to_word_cloud(username):
     img = Image.open("img/outputs/word_clouds/" + username + ".png")
     draw = ImageDraw.Draw(img)
@@ -246,7 +242,9 @@ def add_title_to_word_cloud(username):
 
     img.save("img/outputs/word_clouds/" + username + ".png")
     
-def most_bangers_image(username, liked_rank_1, liked_rank_2, liked_rank_3):
+    
+# Create tweets likes performance image
+def likes_performance_image(username, liked_rank_1, liked_rank_2, liked_rank_3):
     img = Image.open("img/templates/black.png")
     
     font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
@@ -258,7 +256,6 @@ def most_bangers_image(username, liked_rank_1, liked_rank_2, liked_rank_3):
     text_2 = "You had " + str(liked_rank_2) + " banger tweets (1k+ likes)" 
     text_3 = "You had " + str(liked_rank_3) + " huge tweets (10k+ likes)" 
    
-    #         > X   Y ^
     draw.text((50,150), text_1, (37,172,130), font=font1)
     draw.text((50,250), text_2, (37,172,130), font=font1)
     draw.text((50,350), text_3, (37,172,130), font=font1)
@@ -270,53 +267,51 @@ def main(username):
     user = getUserInfo(username)  # get user info, such as id
     user_tweets = getUserRecentTweets(user.id)  # get tweets of user by id
 
-    # get user tweets
-    # create word cloud
+    # Get user tweets
+    # Create word cloud
     if storeUserTweets(username, user_tweets):
         createUserWordCloud(username)
 
-    # get user stats
+    # Get user stats
     df = tweetsToDataFrame(user_tweets.data)
     
-    # carry out sentiment analysis
+    # Carry out sentiment analysis
     df['sentiment'] = np.array([analyse_sentiment(tweet) for tweet in df['tweets']])
     
-    # change how many rows df prints
-    #pd.set_option('display.max_rows', 100)
-    #print(df.head(100))  # print dataframe
-    # 
-    # print(dir(user_tweets.data)) # What attributes exist
-    # print(user_tweets.data[0].public_metrics)
-    #
-    # print metrics
+    #pd.set_option('display.max_rows', 100) # Change how many rows df prints
+    #print(df.head(100))  # Print dataframe
+
+    #print(dir(user_tweets.data)) # What attributes exist
+    #print(user_tweets.data[0].public_metrics)
+
+    # Print metrics columns
     #print('retweets ', np.max(df['retweet_count']))
     #print('reply ', np.max(df['reply_count']))
     #print('like ', np.max(df['like_count']))
     #print('quote ', np.max(df['quote_count']))
     #print('created_at ', np.max(df['created_at']))
-    #
-    # print average sentiment
-    # print(np.average(df['sentiment']) * 100)
-    
-    # sentiment to happiness
+
+    # Generate sentiment image
     sentiment = np.average(df['sentiment']) * 100
     sentiment_image(username, sentiment)
     
-    # metrics 
+    # Generate metrics image
     most_likes = np.max(df['like_count'])
     most_retweets = np.max(df['retweet_count'])
     most_quotes = np.max(df['quote_count'])
     
     highest_metrics_image(username, most_likes,most_retweets,most_quotes)
     
+    # Generate likes performance image
     liked_rank_1 = len(df[df['like_count'] > 100])
     liked_rank_2 = len(df[df['like_count'] > 1000])
     liked_rank_3 = len(df[df['like_count'] > 10000])
-    most_bangers_image(username, liked_rank_1, liked_rank_2, liked_rank_3)
     
+    likes_performance_image(username, liked_rank_1, liked_rank_2, liked_rank_3)
+    
+    # Update title of word cloud generated image
     add_title_to_word_cloud(username)
     
     
 if __name__ == "__main__":
     main(sys.argv[1])
-    #sentiment_image(11)
