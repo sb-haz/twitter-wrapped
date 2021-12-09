@@ -90,7 +90,7 @@ def createUserWordCloud(username):
     stopwords = STOPWORDS.add('gt')
 
     # Mask
-    custom_mask = np.array(Image.open('img\\masks\\twitter_logo.png'))
+    custom_mask = np.array(Image.open('img\\masks\\twitter_logo_1080x1920.png'))
     font = 'fonts\\SFProDisplay-Light.ttf'
 
     # WordCloud attributes
@@ -155,12 +155,62 @@ def analyse_sentiment(tweet):
     else:
         return -1
 
-# Create sentiment-related image
-def sentiment_image(username, sentiment):
+ 
+def generate_image_one(username, sentiment):
+    
+    # Generate word cloud
+    createUserWordCloud(username)
+    
+    # Open black image
+    img = Image.open("img/outputs/word_clouds/" + username + ".png")
+    draw = ImageDraw.Draw(img)
+    
+    # Template size
+    image_width, image_height = img.size
+    
+    font = {
+        "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
+        "text": ImageFont.truetype("fonts/theboldfont.ttf", 60),
+        "number": ImageFont.truetype("fonts/theboldfont.ttf", 100)
+    }
+
+    font_colour = {
+        "title": (213, 226, 26),
+        "text": (37,172,130),
+        "number": (213, 226, 26)
+    }
+
+    # Text position
+    x_pos = 100
+    y_pos = 100
+    spacer = 100
+    
+    # Content
+    title_text = ["What you're Tweeting."]
+    #title_text = [username + ",", "Tweets Visualized."]
+    
+    # Draw title
+    draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
+    #draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
+    
+    # Sentiment
+    # Sentiment title
+    sentiment_title = ["But were you happy?"]
+    
+    # Width to right align
+    title_width_0, num_height_0 = font["title"].getsize(sentiment_title[0])
+
+     # Move base-level y-pos down
+    y_pos = image_height/1.4
+    
+    # Draw sentiment title
+    temp_x_pos = image_width - x_pos - title_width_0
+    draw.text((temp_x_pos, y_pos), sentiment_title[0], font_colour["title"], font = font["title"])
     
     # Classify based on numerical sentiment value (-100 to 100)
     if sentiment > 10:
         sentiment_class = "VERY HAPPY!"
+        sentiment_emoji_path = ""
     elif sentiment > 5:
         sentiment_class = "HAPPY"
     elif sentiment > 0:
@@ -169,84 +219,34 @@ def sentiment_image(username, sentiment):
         sentiment_class = "DOWN BAD"
     else:
         sentiment_class = "DOWN TERRIBLE"
-
-    img = Image.open("img/templates/black.png")
-    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
-    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 100)
     
-    draw = ImageDraw.Draw(img)
+    sentiment_text = ["Emotionally your tweets scored", str(sentiment), " meaning you were...", sentiment_class]
     
-    text_1 = "Emotionally your tweets scored"
-    text_2 = str(sentiment)
-    text_3 = "meaning you were..."
-    text_4 = sentiment_class
-
-    draw.text((150,150), text_1, (37,172,130), font = font1)
-    draw.text((150,250), text_2, (213,226,26), font = font2)
-    draw.text((350,250), text_3, (37,172,130), font = font1)
-    draw.text((150,375), text_4, (213,226,26), font = font2)
+    # Draw sentiment text
+    draw.text((x_pos, y_pos + spacer*2), sentiment_text[0], font_colour["text"], font = font["text"])
     
-    img.save("img/outputs/sentiment/" + username + ".png")
+    # Draw sentiment value
+    draw.text((x_pos, y_pos + spacer*3), sentiment_text[1], font_colour["number"], font = font["number"])
     
-
-# Modify word cloud image to add title text
-def add_title_to_word_cloud(username):
-    img = Image.open("img/outputs/word_clouds/" + username + ".png")
-    draw = ImageDraw.Draw(img)
+    # Move text to be positioned after value number
+    num_width, num_height_0 = font["number"].getsize(sentiment_text[1])
+    draw.text((x_pos + num_width + 25, y_pos + spacer*3.25), sentiment_text[2], font_colour["text"], font = font["text"])
     
-    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 50)
+    # Draw sentiment class
+    draw.text((x_pos, y_pos + spacer*4.5), sentiment_text[3], font_colour["number"], font = font["number"])
     
-    title = username + "'s Tweets Visualized"
     
-    draw.text((250,50), title, (213,226,26), font = font2)
-
+    # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
-    
-        
-def generate_image_one():
-    return
+    print("Done!")
 
 
-
-
-
-
-# Create tweets likes performance image
-def likes_performance_image(username,
-                            liked_rank_1,
-                            liked_rank_2,
-                            liked_rank_3):
-    img = Image.open("img/templates/black.png")
-    
-    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
-    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 100)
-    
-    draw = ImageDraw.Draw(img)
-    
-    text_1 = "You had " + str(liked_rank_1) + " good tweets (100+ likes)" 
-    text_2 = "You had " + str(liked_rank_2) + " banger tweets (1k+ likes)" 
-    text_3 = "You had " + str(liked_rank_3) + " huge tweets (10k+ likes)" 
-   
-    draw.text((50,150), text_1, (37,172,130), font = font1)
-    draw.text((50,250), text_2, (37,172,130), font = font1)
-    draw.text((50,350), text_3, (37,172,130), font = font1)
-    
-    img.save("img/outputs/likes_performance/" + username + ".png")
-    
-
-
-
-
-
-
-
-
-# Create metrics-related image
-def highest_metrics_image(username,
-                          most_likes,
-                          most_retweets,
-                          most_quotes,
-                          likes_performance):
+# Create metrics-related image    
+def generate_image_two(username,
+                       most_likes,
+                       most_retweets,
+                       most_quotes,
+                       likes_performance):
     
     # Open black image
     img = Image.open("img/templates/black.png")
@@ -256,9 +256,9 @@ def highest_metrics_image(username,
     image_width, image_height = img.size
     
     font = {
-        "title": ImageFont.truetype("fonts/theboldfont.ttf", 80),
-        "text": ImageFont.truetype("fonts/theboldfont.ttf", 65),
-        "number": ImageFont.truetype("fonts/theboldfont.ttf", 95)
+        "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
+        "text": ImageFont.truetype("fonts/theboldfont.ttf", 60),
+        "number": ImageFont.truetype("fonts/theboldfont.ttf", 100)
     }
 
     font_colour = {
@@ -278,8 +278,7 @@ def highest_metrics_image(username,
     metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
     metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
     
-    # lp = 'likes performance'
-    lp_title_text = ["Get Any Big Tweets?"]
+    lp_title_text = ["Get Any Big Tweets?"] # LP = 'likes performance'
     
     lp_text = ["> 100 likes.", "> 1,000 likes", "> 10,000 likes!"]
     lp_values = [str(likes_performance[100]), str(likes_performance[1000]), str(likes_performance[10000])]
@@ -310,7 +309,6 @@ def highest_metrics_image(username,
     draw.text((temp_x_pos, y_pos + spacer*6), metrics_values[2], font_colour["number"], font = font["number"])
     
     # Likes Performance section
-    
     # Right align
     title_width, title_height = font["title"].getsize(lp_title_text[0])
     temp_x_pos = image_width - x_pos - title_width
@@ -341,27 +339,15 @@ def highest_metrics_image(username,
     draw.text((x_pos, y_pos + spacer*3.5), lp_values[1], font_colour["number"], font = font["number"])
     draw.text((x_pos, y_pos + spacer*5), lp_values[2], font_colour["number"], font = font["number"])
     
+    # Save image
     img.save("img/outputs/highest_metrics/" + username + ".png")
-    print("Done")
     
     
     
-  
     
-def generate_image_two(username,
-                       most_likes,
-                       most_retweets,
-                       most_quotes,
-                       num_likes_100,
-                       num_likes_1000,
-                       num_likes_10000):
     
-    img = Image.open("img/templates/black.png")
-    draw = ImageDraw.Draw(img)
     
-    title_font = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
-    font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
-    font2 = ImageFont.truetype("fonts/theboldfont.ttf", 75)
+    
     
 def main(username):
     user = getUserInfo(username)  # get user info, such as id
@@ -400,7 +386,7 @@ def main(username):
     most_retweets = np.max(df['retweet_count'])
     most_quotes = np.max(df['quote_count'])
     
-    highest_metrics_image(username, most_likes, most_retweets, most_quotes)
+    generate_image_two(username, most_likes, most_retweets, most_quotes)
     
     # Generate likes performance image
     num_likes_100 = len(df[df['like_count'] > 100])
@@ -413,16 +399,22 @@ def main(username):
         10000: len(df[df['like_count'] > 10000])
     }
     
-    likes_performance_image(username, likes_performance)
+    #likes_performance_image(username, likes_performance)
     
     # Update title of word cloud generated image
-    add_title_to_word_cloud(username)
+    #add_title_to_word_cloud(username)
     
     
 if __name__ == "__main__":
     #main(sys.argv[1])
-    highest_metrics_image("Talal916",787,16,292,{
+    
+    generate_image_two("Talal916",787,16,292,{
         100: 8,
         1000: 0,
         10000: 0
     })
+    
+    generate_image_one("FinessTV", 6.0)
+    
+    #sentiment = np.average(df['sentiment']) * 100
+    #sentiment_image("FinessTV", sentiment)
