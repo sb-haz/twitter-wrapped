@@ -9,27 +9,27 @@ import sys  # running python file with args, remove later
 
 # Twitter API Client
 def getClient():
-    client = tweepy.Client(bearer_token=twitter_credentials.bearer_token,
-                           consumer_key=twitter_credentials.consumer_key,
-                           consumer_secret=twitter_credentials.consumer_secret,
-                           access_token=None, access_token_secret=None)
+    client = tweepy.Client(bearer_token = twitter_credentials.bearer_token,
+                           consumer_key = twitter_credentials.consumer_key,
+                           consumer_secret = twitter_credentials.consumer_secret,
+                           access_token = None, access_token_secret = None)
     return client
 
 
 # Return user information
 def getUserInfo(user):
     client = getClient()
-    user = client.get_user(username=user)
+    user = client.get_user(username = user)
     return user.data
 
 
 # Return recent tweets of user
 def getUserRecentTweets(id):
     client = getClient()
-    user_tweets = client.get_users_tweets(id=id,
-                                          tweet_fields=['public_metrics,created_at'],
-                                          exclude=['retweets', 'replies'],
-                                          max_results=100,
+    user_tweets = client.get_users_tweets(id = id,
+                                          tweet_fields = ['public_metrics,created_at'],
+                                          exclude = ['retweets', 'replies'],
+                                          max_results = 100,
                                           #start_time = '2021-09-02T00:00:00.000Z'
                                           )
     
@@ -83,7 +83,7 @@ def createUserWordCloud(username):
 
     # Content-related
     text = open('user_tweets\\' + username + '.txt',
-                'r', encoding='utf-8').read()
+                'r', encoding = 'utf-8').read()
 
     # Stop words, add 'gt' to set
     stopwords = STOPWORDS.add('gt')
@@ -122,7 +122,7 @@ def tweetsToDataFrame(tweets):
     
     # Create new dataframe with tweet text
     df = pd.DataFrame(
-        data=[tweet.text for tweet in tweets], columns=['tweets'])
+        data = [tweet.text for tweet in tweets], columns = ['tweets'])
 
     # Create columns for metrics
     df['retweet_count'] = np.array(
@@ -179,10 +179,10 @@ def sentiment_image(username, sentiment):
     text_3 = "meaning you were..."
     text_4 = sentiment_class
 
-    draw.text((150,150), text_1, (37,172,130), font=font1)
-    draw.text((150,250), text_2, (213,226,26), font=font2)
-    draw.text((350,250), text_3, (37,172,130), font=font1)
-    draw.text((150,375), text_4, (213,226,26), font=font2)
+    draw.text((150,150), text_1, (37,172,130), font = font1)
+    draw.text((150,250), text_2, (213,226,26), font = font2)
+    draw.text((350,250), text_3, (37,172,130), font = font1)
+    draw.text((150,375), text_4, (213,226,26), font = font2)
     
     img.save("img/outputs/sentiment/" + username + ".png")
     
@@ -212,19 +212,19 @@ def highest_metrics_image(username,
     quote_text_2 = str(most_quotes)
     quote_text_3 = " quotes"
     
-    draw.text((120,100), title, (213,226,26), font=font2)
+    draw.text((120,100), title, (213,226,26), font = font2)
     
-    draw.text((150,250), liked_text_1, (37,172,130), font=font1)
-    draw.text((150,325), liked_text_2, (213,226,26), font=font2)
-    draw.text((300,325), liked_text_3, (37,172,130), font=font1)
+    draw.text((150,250), liked_text_1, (37,172,130), font = font1)
+    draw.text((150,325), liked_text_2, (213,226,26), font = font2)
+    draw.text((300,325), liked_text_3, (37,172,130), font = font1)
     
-    draw.text((150,250+200), retweet_text_1, (37,172,130), font=font1)
-    draw.text((150,325+200), retweet_text_2, (213,226,26), font=font2)
-    draw.text((300,325+200), retweet_text_3, (37,172,130), font=font1)
+    draw.text((150,250+200), retweet_text_1, (37,172,130), font = font1)
+    draw.text((150,325+200), retweet_text_2, (213,226,26), font = font2)
+    draw.text((300,325+200), retweet_text_3, (37,172,130), font = font1)
     
-    draw.text((150,250+200+200), quote_text_1, (37,172,130), font=font1)
-    draw.text((150,325+200+200), quote_text_2, (213,226,26), font=font2)
-    draw.text((300,325+200+200), quote_text_3, (37,172,130), font=font1)
+    draw.text((150,250+200+200), quote_text_1, (37,172,130), font = font1)
+    draw.text((150,325+200+200), quote_text_2, (213,226,26), font = font2)
+    draw.text((300,325+200+200), quote_text_3, (37,172,130), font = font1)
     
     img.save("img/outputs/highest_metrics/" + username + ".png")
     
@@ -238,13 +238,16 @@ def add_title_to_word_cloud(username):
     
     title = username + "'s word cloud"
     
-    draw.text((250,50), title, (213,226,26), font=font2)
+    draw.text((250,50), title, (213,226,26), font = font2)
 
     img.save("img/outputs/word_clouds/" + username + ".png")
     
     
 # Create tweets likes performance image
-def likes_performance_image(username, liked_rank_1, liked_rank_2, liked_rank_3):
+def likes_performance_image(username,
+                            liked_rank_1,
+                            liked_rank_2,
+                            liked_rank_3):
     img = Image.open("img/templates/black.png")
     
     font1 = ImageFont.truetype("fonts/CaviarDreams_Bold.ttf", 50)
@@ -256,9 +259,9 @@ def likes_performance_image(username, liked_rank_1, liked_rank_2, liked_rank_3):
     text_2 = "You had " + str(liked_rank_2) + " banger tweets (1k+ likes)" 
     text_3 = "You had " + str(liked_rank_3) + " huge tweets (10k+ likes)" 
    
-    draw.text((50,150), text_1, (37,172,130), font=font1)
-    draw.text((50,250), text_2, (37,172,130), font=font1)
-    draw.text((50,350), text_3, (37,172,130), font=font1)
+    draw.text((50,150), text_1, (37,172,130), font = font1)
+    draw.text((50,250), text_2, (37,172,130), font = font1)
+    draw.text((50,350), text_3, (37,172,130), font = font1)
     
     img.save("img/outputs/big_tweets/" + username + ".png")
     
@@ -300,7 +303,7 @@ def main(username):
     most_retweets = np.max(df['retweet_count'])
     most_quotes = np.max(df['quote_count'])
     
-    highest_metrics_image(username, most_likes,most_retweets,most_quotes)
+    highest_metrics_image(username, most_likes, most_retweets, most_quotes)
     
     # Generate likes performance image
     liked_rank_1 = len(df[df['like_count'] > 100])
