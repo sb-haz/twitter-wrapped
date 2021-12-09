@@ -210,31 +210,40 @@ def generate_image_one(username, sentiment):
     # Classify based on numerical sentiment value (-100 to 100)
     if sentiment > 10:
         sentiment_class = "VERY HAPPY!"
-        sentiment_emoji_path = ""
+        sentiment_emoji = Image.open("img/emojis/grinning-face-with-sweat_1f605.png")
     elif sentiment > 5:
         sentiment_class = "HAPPY"
+        sentiment_emoji = Image.open("img/emojis/beaming-face-with-smiling-eyes_1f601.png")
     elif sentiment > 0:
         sentiment_class = "BARELY HAPPY"
+        sentiment_emoji = Image.open("img/emojis/emoji-upside-down-face_1f643.png")
     elif sentiment > -5:
         sentiment_class = "DOWN BAD"
+        sentiment_emoji = Image.open("img/emojis/face-with-head-bandage_1f915.png")
     else:
         sentiment_class = "DOWN TERRIBLE"
+        sentiment_emoji = Image.open("img\emojis\sleepy-face_1f62a.png")
+    
+    
     
     sentiment_text = ["Emotionally your tweets scored", str(sentiment), " meaning you were...", sentiment_class]
     
     # Draw sentiment text
-    draw.text((x_pos, y_pos + spacer*2), sentiment_text[0], font_colour["text"], font = font["text"])
+    draw.text((x_pos, y_pos + spacer * 2), sentiment_text[0], font_colour["text"], font = font["text"])
     
     # Draw sentiment value
-    draw.text((x_pos, y_pos + spacer*3), sentiment_text[1], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer * 3), sentiment_text[1], font_colour["number"], font = font["number"])
     
     # Move text to be positioned after value number
-    num_width, num_height_0 = font["number"].getsize(sentiment_text[1])
-    draw.text((x_pos + num_width + 25, y_pos + spacer*3.25), sentiment_text[2], font_colour["text"], font = font["text"])
+    num_width, num_height = font["number"].getsize(sentiment_text[1])
+    draw.text((x_pos + num_width + 25, y_pos + spacer * 3.25), sentiment_text[2], font_colour["text"], font = font["text"])
     
     # Draw sentiment class
-    draw.text((x_pos, y_pos + spacer*4.5), sentiment_text[3], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer * 4.5), sentiment_text[3], font_colour["number"], font = font["number"])
     
+    # Draw sentiment emoji after sentiment class
+    txt_width, txt_height = font["number"].getsize(sentiment_text[3])
+    img.paste(sentiment_emoji, (x_pos + txt_width + 25, int(y_pos + spacer * 4.5)))
     
     # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
