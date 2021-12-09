@@ -245,7 +245,8 @@ def likes_performance_image(username,
 def highest_metrics_image(username,
                           most_likes,
                           most_retweets,
-                          most_quotes):
+                          most_quotes,
+                          likes_performance):
     
     # Open black image
     img = Image.open("img/templates/black.png")
@@ -256,8 +257,8 @@ def highest_metrics_image(username,
     
     font = {
         "title": ImageFont.truetype("fonts/theboldfont.ttf", 80),
-        "text": ImageFont.truetype("fonts/theboldfont.ttf", 80),
-        "number": ImageFont.truetype("fonts/theboldfont.ttf", 80)
+        "text": ImageFont.truetype("fonts/theboldfont.ttf", 65),
+        "number": ImageFont.truetype("fonts/theboldfont.ttf", 95)
     }
 
     font_colour = {
@@ -271,10 +272,17 @@ def highest_metrics_image(username,
     y_pos = 100
     spacer = 100
     
-    # Text content
+    # Content
     title_text = [username + ",", "Your Popular Tweets."]
+    
     metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
     metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
+    
+    # lp = 'likes performance'
+    lp_title_text = ["Any Bangers?"]
+    
+    lp_text = ["Did okay.", "Banged.", "Blew up."]
+    lp_values = [str(likes_performance[100]), str(likes_performance[1000]), str(likes_performance[10000])]
   
     # Draw title
     draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
@@ -299,13 +307,41 @@ def highest_metrics_image(username,
     
     temp_x_pos = image_width - x_pos - num_width_2
     draw.text((temp_x_pos, y_pos + spacer*6), metrics_values[2], font_colour["number"], font = font["number"])
-  
-  
-  
-  
     
+    # Likes Performance section
+    
+    # Right align
+    title_width, title_height = font["title"].getsize(lp_title_text[0])
+    temp_x_pos = image_width - x_pos - title_width
+    
+    # Draw title
+    draw.text((temp_x_pos, image_height/2), lp_title_text[0], font_colour["title"], font = font["title"])
+    
+    # Width to right align
+    txt_width_0, txt_height_0 = font["text"].getsize(lp_text[0])
+    txt_width_1, txt_height_1 = font["text"].getsize(lp_text[1])
+    txt_width_2, txt_height_2 = font["text"].getsize(lp_text[2])
+    
+    # Move base-level y-pos down
+    y_pos = image_height/2
+    
+    # Draw lp text
+    temp_x_pos = image_width - x_pos - txt_width_0
+    draw.text((temp_x_pos, y_pos + spacer*2), lp_text[0], font_colour["text"], font = font["text"])
+    draw.text((temp_x_pos, y_pos + spacer*3.5), lp_text[1], font_colour["text"], font = font["text"])
+    draw.text((temp_x_pos, y_pos + spacer*5), lp_text[2], font_colour["text"], font = font["text"])
+    
+    # Draw lp values
+    draw.text((x_pos, y_pos + spacer*2), lp_values[0], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer*3.5), lp_values[1], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer*5), lp_values[2], font_colour["number"], font = font["number"])
+      
     img.save("img/outputs/highest_metrics/" + username + ".png")
     print("Done")
+    
+    
+    
+    
     
     
     
@@ -368,7 +404,13 @@ def main(username):
     num_likes_1000 = len(df[df['like_count'] > 1000])
     num_likes_10000 = len(df[df['like_count'] > 10000])
     
-    likes_performance_image(username, num_likes_100, num_likes_1000, num_likes_1000)
+    likes_performance = {
+        100: len(df[df['like_count'] > 100]),
+        1000: len(df[df['like_count'] > 1000]),
+        10000: len(df[df['like_count'] > 10000])
+    }
+    
+    likes_performance_image(username, likes_performance)
     
     # Update title of word cloud generated image
     add_title_to_word_cloud(username)
@@ -376,4 +418,8 @@ def main(username):
     
 if __name__ == "__main__":
     #main(sys.argv[1])
-    highest_metrics_image("Talal916",787,16,292)
+    highest_metrics_image("Talal916",787,16,292,{
+        100: 8,
+        1000: 0,
+        10000: 0
+    })
