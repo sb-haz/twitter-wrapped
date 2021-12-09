@@ -273,16 +273,17 @@ def highest_metrics_image(username,
     spacer = 100
     
     # Content
-    title_text = [username + ",", "Your Popular Tweets."]
+    title_text = [username + ",", "You're popular."]
     
     metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
     metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
     
     # lp = 'likes performance'
-    lp_title_text = ["Any Bangers?"]
+    lp_title_text = ["Get Any Big Tweets?"]
     
-    lp_text = ["> 100 likes.", "> 1k likes", "> 10k likes!"]
-    lp_values = [str(likes_performance[100]) + " Tweets", str(likes_performance[1000]) + " Tweets", str(likes_performance[10000]) + " Tweets"]
+    lp_text = ["> 100 likes.", "> 1,000 likes", "> 10,000 likes!"]
+    lp_values = [str(likes_performance[100]), str(likes_performance[1000]), str(likes_performance[10000])]
+    #lp_values = [str(likes_performance[100]) + " Tweets", str(likes_performance[1000]) + " Tweets", str(likes_performance[10000]) + " Tweets"]
   
     # Draw title
     draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
@@ -328,7 +329,11 @@ def highest_metrics_image(username,
     # Draw lp text
     temp_x_pos = image_width - x_pos - txt_width_0
     draw.text((temp_x_pos, y_pos + spacer*2), lp_text[0], font_colour["text"], font = font["text"])
+    
+    temp_x_pos = image_width - x_pos - txt_width_1
     draw.text((temp_x_pos, y_pos + spacer*3.5), lp_text[1], font_colour["text"], font = font["text"])
+    
+    temp_x_pos = image_width - x_pos - txt_width_2
     draw.text((temp_x_pos, y_pos + spacer*5), lp_text[2], font_colour["text"], font = font["text"])
     
     # Draw lp values
