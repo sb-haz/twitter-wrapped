@@ -217,7 +217,7 @@ def generate_image_one(username, sentiment):
     sentiment_emoji = sentiment_emoji.resize((int(emoji_width), int(emoji_height)))
     
     # Sentiment title
-    sentiment_title = ["But were you happy?"]
+    sentiment_title = ["How Did You Feel?"]
     
     # Sentiment text            0                   1          2               3          4               5
     sentiment_text = ["Emotionally your tweets", "scored", str(sentiment), "meaning", "you were...", sentiment_class]
@@ -228,7 +228,7 @@ def generate_image_one(username, sentiment):
     # Draw sentiment title, right align
     title_width, title_height = font["title"].getsize(sentiment_title[0])
     temp_x_pos = image_width - x_pos - title_width
-    draw.text((temp_x_pos, y_pos), sentiment_title[0], font_colour["title"], font = font["title"])
+    draw.text((temp_x_pos, y_pos + spacer * 0.4), sentiment_title[0], font_colour["title"], font = font["title"])
            
     # 00000 
     # Draw text 1
@@ -242,7 +242,7 @@ def generate_image_one(username, sentiment):
     # Draw sentiment value
     # Get width of text to prevent overlap
     txtwrap_x_pos = font["text"].getsize(sentiment_text[1])[0] + x_pos + 25
-    draw.text((txtwrap_x_pos, y_pos + spacer * 2.5), sentiment_text[2], font_colour["number"], font = font["number"])
+    draw.text((txtwrap_x_pos, y_pos + spacer * 2.6), sentiment_text[2], font_colour["number"], font = font["number"])
     
     # 33333
     # Draw text 3
@@ -257,11 +257,11 @@ def generate_image_one(username, sentiment):
     # 55555
     # Draw sentiment class
     temp_x_pos = font["text"].getsize(sentiment_text[4])[0] + x_pos + 25
-    draw.text((temp_x_pos, y_pos + spacer * 4), sentiment_text[5], font_colour["number"], font = font["number"])
+    draw.text((temp_x_pos, y_pos + spacer * 4.1), sentiment_text[5], font_colour["number"], font = font["number"])
         
     # Draw sentiment emoji after sentiment class
     txtwrap_x_pos = font["number"].getsize(sentiment_text[5])[0] + temp_x_pos + 25
-    img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 4)))
+    img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 4.1)))
     
     # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
