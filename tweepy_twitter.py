@@ -140,7 +140,6 @@ def tweetsToDataFrame(tweets):
     return df
 
 
-
 # Sentiment analysis, returns 
 # -1 for negative
 # 0 for neutral
@@ -226,7 +225,7 @@ def generate_image_one(username, sentiment):
     y_pos = image_height/1.5
     
     # Draw sentiment title, right align
-    title_width, title_height = font["title"].getsize(sentiment_title[0])
+    title_width = font["title"].getsize(sentiment_title[0])[0]
     temp_x_pos = image_width - x_pos - title_width
     draw.text((temp_x_pos, y_pos + spacer * 0.4), sentiment_title[0], font_colour["title"], font = font["title"])
            
@@ -310,8 +309,7 @@ def generate_image_two(username,
     lp_text = [ "> 100 likes.", "> 1,000 likes.", "> 10,000 likes."]
     lp_values = [str(likes_performance[100]), str(likes_performance[1000]), str(likes_performance[10000])]
     lp_values_additional_text = ["tweets"]
-    #lp_values = [str(likes_performance[100]) + " Tweets", str(likes_performance[1000]) + " Tweets", str(likes_performance[10000]) + " Tweets"]
-  
+
     # Draw title
     draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
     draw.text((x_pos, y_pos + spacer*1.1), title_text[1], font_colour["title"], font = font["title"])
@@ -320,11 +318,11 @@ def generate_image_two(username,
     draw.text((x_pos, y_pos + spacer*3), metrics_text[0], font_colour["text"], font = font["text"])
     draw.text((x_pos, y_pos + spacer*4.5), metrics_text[1], font_colour["text"], font = font["text"])
     draw.text((x_pos, y_pos + spacer*6), metrics_text[2], font_colour["text"], font = font["text"])
-        
+
     # Width to right align
-    num_width_0, num_height_0 = font["number"].getsize(metrics_values[0])
-    num_width_1, num_height_1 = font["number"].getsize(metrics_values[1])
-    num_width_2, num_height_2 = font["number"].getsize(metrics_values[2])
+    num_width_0 = font["number"].getsize(metrics_values[0])[0]
+    num_width_1 = font["number"].getsize(metrics_values[1])[0]
+    num_width_2 = font["number"].getsize(metrics_values[2])[0]
     
     # Draw metric values
     temp_x_pos = image_width - x_pos - num_width_0
@@ -338,13 +336,13 @@ def generate_image_two(username,
     
     # Likes Performance section
     # Right align
-    title_width, title_height = font["title"].getsize(lp_title_text[0])
+    title_width = font["title"].getsize(lp_title_text[0])[0]
     temp_x_pos = image_width - x_pos - title_width
         
     # Width to right align
-    txt_width_0, txt_height_0 = font["text"].getsize(lp_text[0])
-    txt_width_1, txt_height_1 = font["text"].getsize(lp_text[1])
-    txt_width_2, txt_height_2 = font["text"].getsize(lp_text[2])
+    txt_width_0 = font["text"].getsize(lp_text[0])[0]
+    txt_width_1 = font["text"].getsize(lp_text[1])[0]
+    txt_width_2 = font["text"].getsize(lp_text[2])[0]
     
     # Move base-level y-pos down
     y_pos = image_height/1.8
