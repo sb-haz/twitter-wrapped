@@ -170,7 +170,7 @@ def generate_image_one(username, sentiment):
     
     font = {
         "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
-        "text": ImageFont.truetype("fonts/theboldfont.ttf", 60),
+        "text": ImageFont.truetype("fonts/PoetsenOne-Regular.ttf", 60),
         "number": ImageFont.truetype("fonts/theboldfont.ttf", 100)
     }
 
@@ -219,9 +219,9 @@ def generate_image_one(username, sentiment):
     # Sentiment title
     sentiment_title = ["But were you happy?"]
     
-    # Sentiment text
-    sentiment_text = ["Emotionally your tweets scored", str(sentiment), " meaning you were...", sentiment_class]
-    
+    # Sentiment text            0                   1          2               3          4               5
+    sentiment_text = ["Emotionally your tweets", "scored", str(sentiment), "meaning", "you were...", sentiment_class]
+
     # Move base-level y-pos down
     y_pos = image_height/1.5
     
@@ -229,23 +229,39 @@ def generate_image_one(username, sentiment):
     title_width, title_height = font["title"].getsize(sentiment_title[0])
     temp_x_pos = image_width - x_pos - title_width
     draw.text((temp_x_pos, y_pos), sentiment_title[0], font_colour["title"], font = font["title"])
-            
-    # Draw sentiment text
-    draw.text((x_pos, y_pos + spacer), sentiment_text[0], font_colour["text"], font = font["text"])
+           
+    # 00000 
+    # Draw text 1
+    draw.text((x_pos, y_pos + spacer * 1.5), sentiment_text[0], font_colour["text"], font = font["text"])
     
+    # 11111
+    # Draw text 2
+    draw.text((x_pos, y_pos + spacer * 2.75), sentiment_text[1], font_colour["text"], font = font["text"])
+    
+    # 22222
     # Draw sentiment value
-    draw.text((x_pos, y_pos + spacer * 2), sentiment_text[1], font_colour["number"], font = font["number"])
+    # Get width of text to prevent overlap
+    txtwrap_x_pos = font["text"].getsize(sentiment_text[1])[0] + x_pos + 25
+    draw.text((txtwrap_x_pos, y_pos + spacer * 2.5), sentiment_text[2], font_colour["number"], font = font["number"])
     
+    # 33333
+    # Draw text 3
     # Move text to be positioned after value number
-    num_width, num_height = font["number"].getsize(sentiment_text[1])
-    draw.text((x_pos + num_width + 25, y_pos + spacer * 2.25), sentiment_text[2], font_colour["text"], font = font["text"])
+    txtwrap_x_pos = font["number"].getsize(sentiment_text[2])[0] + txtwrap_x_pos + 25
+    draw.text((txtwrap_x_pos, y_pos + spacer * 2.75), sentiment_text[3], font_colour["text"], font = font["text"])
     
+    # 44444
+    # Draw text 4
+    draw.text((x_pos, y_pos + spacer * 4.25), sentiment_text[4], font_colour["text"], font = font["text"])
+    
+    # 55555
     # Draw sentiment class
-    draw.text((x_pos, y_pos + spacer * 3.5), sentiment_text[3], font_colour["number"], font = font["number"])
-    
+    temp_x_pos = font["text"].getsize(sentiment_text[4])[0] + x_pos + 25
+    draw.text((temp_x_pos, y_pos + spacer * 4), sentiment_text[5], font_colour["number"], font = font["number"])
+        
     # Draw sentiment emoji after sentiment class
-    txt_width, txt_height = font["number"].getsize(sentiment_text[3])
-    img.paste(sentiment_emoji, (x_pos + txt_width + 25, int(y_pos + spacer * 3.5)))
+    txtwrap_x_pos = font["number"].getsize(sentiment_text[5])[0] + temp_x_pos + 25
+    img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 4)))
     
     # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
@@ -268,7 +284,7 @@ def generate_image_two(username,
     
     font = {
         "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
-        "text": ImageFont.truetype("fonts/theboldfont.ttf", 60),
+        "text": ImageFont.truetype("fonts/PoetsenOne-Regular.ttf", 60),
         "number": ImageFont.truetype("fonts/theboldfont.ttf", 100)
     }
 
