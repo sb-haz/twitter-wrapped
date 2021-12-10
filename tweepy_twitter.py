@@ -307,13 +307,14 @@ def generate_image_two(username,
     
     lp_title_text = ["Get Any Big Tweets?"] # LP = 'likes performance'
     
-    lp_text = ["> 100 likes.", "> 1,000 likes", "> 10,000 likes!"]
+    lp_text = [ "> 100 likes.", "> 1,000 likes.", "> 10,000 likes."]
     lp_values = [str(likes_performance[100]), str(likes_performance[1000]), str(likes_performance[10000])]
+    lp_values_additional_text = ["tweets"]
     #lp_values = [str(likes_performance[100]) + " Tweets", str(likes_performance[1000]) + " Tweets", str(likes_performance[10000]) + " Tweets"]
   
     # Draw title
     draw.text((x_pos, y_pos), title_text[0], font_colour["title"], font = font["title"])
-    draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
+    draw.text((x_pos, y_pos + spacer*1.1), title_text[1], font_colour["title"], font = font["title"])
     
     # Draw metric text
     draw.text((x_pos, y_pos + spacer*3), metrics_text[0], font_colour["text"], font = font["text"])
@@ -339,41 +340,43 @@ def generate_image_two(username,
     # Right align
     title_width, title_height = font["title"].getsize(lp_title_text[0])
     temp_x_pos = image_width - x_pos - title_width
-    
-    # Draw title
-    draw.text((temp_x_pos, image_height/2), lp_title_text[0], font_colour["title"], font = font["title"])
-    
+        
     # Width to right align
     txt_width_0, txt_height_0 = font["text"].getsize(lp_text[0])
     txt_width_1, txt_height_1 = font["text"].getsize(lp_text[1])
     txt_width_2, txt_height_2 = font["text"].getsize(lp_text[2])
     
     # Move base-level y-pos down
-    y_pos = image_height/2
+    y_pos = image_height/1.8
+    
+    # Draw title
+    draw.text((temp_x_pos, y_pos), lp_title_text[0], font_colour["title"], font = font["title"])
     
     # Draw lp text
     temp_x_pos = image_width - x_pos - txt_width_0
-    draw.text((temp_x_pos, y_pos + spacer*2), lp_text[0], font_colour["text"], font = font["text"])
+    draw.text((temp_x_pos, y_pos + spacer*1.75), lp_text[0], font_colour["text"], font = font["text"])
     
     temp_x_pos = image_width - x_pos - txt_width_1
-    draw.text((temp_x_pos, y_pos + spacer*3.5), lp_text[1], font_colour["text"], font = font["text"])
+    draw.text((temp_x_pos, y_pos + spacer*3.25), lp_text[1], font_colour["text"], font = font["text"])
     
     temp_x_pos = image_width - x_pos - txt_width_2
-    draw.text((temp_x_pos, y_pos + spacer*5), lp_text[2], font_colour["text"], font = font["text"])
+    draw.text((temp_x_pos, y_pos + spacer*4.75), lp_text[2], font_colour["text"], font = font["text"])
     
     # Draw lp values
-    draw.text((x_pos, y_pos + spacer*2), lp_values[0], font_colour["number"], font = font["number"])
-    draw.text((x_pos, y_pos + spacer*3.5), lp_values[1], font_colour["number"], font = font["number"])
-    draw.text((x_pos, y_pos + spacer*5), lp_values[2], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer*1.75), lp_values[0], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer*3.25), lp_values[1], font_colour["number"], font = font["number"])
+    draw.text((x_pos, y_pos + spacer*4.75), lp_values[2], font_colour["number"], font = font["number"])
+    
+    # Draw additional text 'twitter' next to lp values
+    value_width_1 = font["title"].getsize(lp_values[0])[0]
+    value_width_2 = font["title"].getsize(lp_values[1])[0]
+    value_width_3 = font["title"].getsize(lp_values[2])[0]
+    draw.text((value_width_1 + x_pos + 50, y_pos + spacer*1.8), lp_values_additional_text[0], font_colour["text"], font = font["text"])
+    draw.text((value_width_2 + x_pos + 50, y_pos + spacer*3.3), lp_values_additional_text[0], font_colour["text"], font = font["text"])
+    draw.text((value_width_3 + x_pos + 50, y_pos + spacer*4.8), lp_values_additional_text[0], font_colour["text"], font = font["text"])
     
     # Save image
     img.save("img/outputs/highest_metrics/" + username + ".png")
-    
-    
-    
-    
-    
-    
     
     
 def main(username):
@@ -405,8 +408,8 @@ def main(username):
     #print('created_at ', np.max(df['created_at']))
 
     # Generate sentiment image
-    sentiment = np.average(df['sentiment']) * 100
-    sentiment_image(username, sentiment)
+    #sentiment = np.average(df['sentiment']) * 100
+    #sentiment_image(username, sentiment)
     
     # Generate metrics image
     most_likes = np.max(df['like_count'])
@@ -435,13 +438,11 @@ def main(username):
 if __name__ == "__main__":
     #main(sys.argv[1])
     
+    generate_image_one("FinessTV", 6.0)
+    
     generate_image_two("Talal916",787,16,292,{
         100: 8,
         1000: 0,
         10000: 0
     })
     
-    generate_image_one("FinessTV", 6.0)
-    
-    #sentiment = np.average(df['sentiment']) * 100
-    #sentiment_image("FinessTV", sentiment)
