@@ -1,45 +1,15 @@
-# import tweepy, json, twitter_credentials
-
-# auth = tweepy.OAuthHandler(consumer_key=twitter_credentials.consumer_key, consumer_secret=twitter_credentials.consumer_secret)
-# auth.set_access_token(twitter_credentials.access_token, twitter_credentials.access_token_secret)
-# api = tweepy.API(auth_handler=auth, secure=True, retry_count=5)
-
-# mentions = api.mentions_timeline()
-# for mention in mentions:
-#     print(mention.id, mention.author.screen_name, mention.text)
-
 import tweepy
 import twitter_credentials
 import json
 
-
-# def getClient():
-#     client = tweepy.Client(bearer_token=twitter_credentials.bearer_token,
-#                            consumer_key=twitter_credentials.consumer_key,
-#                            consumer_secret=twitter_credentials.consumer_secret,
-#                            access_token=twitter_credentials.access_token,
-#                            access_token_secret=twitter_credentials.access_token_secret)
-#     return client
-
-
-def setUpAuth():
-    auth = tweepy.OAuthHandler(consumer_key=twitter_credentials.consumer_key,
-                               consumer_secret=twitter_credentials.consumer_secret)
-    auth.set_access_token(twitter_credentials.access_token,
-                          twitter_credentials.access_token_secret)
-    api = tweepy.API(auth=auth, retry_count=5)
-    return api, auth
-
-
-def respondToTweet(tweet, tweetId):
-    api, auth = setUpAuth()
-    api.update_status(tweet, in_reply_to_status_id=tweetId,
-                         auto_populate_reply_metadata=True)
-# AttributeError: 'Client' object has no attribute 'update_status'
+bearer_token = twitter_credentials.bearer_token
+consumer_key = twitter_credentials.consumer_key
+consumer_secret = twitter_credentials.consumer_secret
+access_token = twitter_credentials.access_token
+access_token_secret = twitter_credentials.access_token_secret
 
 
 class streamListener(tweepy.Stream):
-
     # overwrite on_data method
     def on_data(self, data):
 
@@ -50,20 +20,13 @@ class streamListener(tweepy.Stream):
         # can also do 'name' to get username
         # if 'protected' true, then stop
         # if 'following' false, then stop
-        tweetId = clean_data['id']
-        tweetUserName = clean_data['user']['name']
-
-        tweet = "" + tweetUserName + " Here's your Twitter Wrapped 2021!"
-
-        respondToTweet(tweet, tweetId)
-
-        # try:
-        #     with open('python.json', 'a') as f:
-        #         f.write(data)
-        #         return True
-        # except BaseException as e:
-        #     print("Error on_data: %s" % str(e))
-
+        
+        tweet_id = clean_data['id']
+        tweet_username = clean_data['user']['screen_name'] # screen_name
+        tweet_text = "@" + tweet_username + " Here's your Twitter Wrapped 2021!"
+        
+        print(tweet_text) # @FinessTV Here's your Twitter Wrapped 2021!
+        respondToTweet(tweet_text, tweet_id)
         return True
 
     def on_error(self, status):
@@ -71,9 +34,27 @@ class streamListener(tweepy.Stream):
         return True
 
 
-twitter_stream = streamListener(
-    twitter_credentials.consumer_key, twitter_credentials.consumer_secret,
-    twitter_credentials.access_token, twitter_credentials.access_token_secret
-)
+def setUpAuth():
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth=auth, retry_count=5)
+    return api
 
-twitter_stream.filter(track=['@TweetWrapped test'])
+
+def followStream():
+    twitter_stream = streamListener(consumer_key, consumer_secret, access_token, access_token_secret)
+    twitter_stream.filter(track=['@TweetWrapped hi'])
+
+
+def respondToTweet(tweet_text, tweet_id):
+    #api = setUpAuth()
+    
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth=auth, retry_count=5)
+    
+    api.update_status(status=tweet_text, in_reply_to_status_id=tweet_id, auto_populate_reply_metadata=True)
+    # tweepy.errors.Unauthorized: 401 Unauthorized
+
+if __name__ == "__main__":
+    followStream()
