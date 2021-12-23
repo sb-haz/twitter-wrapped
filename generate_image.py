@@ -487,7 +487,7 @@ def generate_word_cloud_image(username):
     print("Created word cloud image.")
 
 
-def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
+def generate_highest_metrics_image(username, most_likes, most_retweets, most_quotes):
 
     # Open black image
     img = Image.open("img/templates/purple_500x500.png")
@@ -551,7 +551,7 @@ def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
     print("Created highest metrics image.")
 
 
-def generate_likes_performance_image(likes_performance):
+def generate_likes_performance_image(username, likes_performance):
 
     # Open black image
     img = Image.open("img/templates/purple_500x500.png")
@@ -647,7 +647,7 @@ def generate_likes_performance_image(likes_performance):
     print("Created likes performance image.")
 
 
-def generate_sentiment_analysis_image(sentiment):
+def generate_sentiment_analysis_image(username, sentiment):
 
     # Open black image
     img = Image.open("img/templates/purple_500x500.png")
@@ -767,6 +767,29 @@ def generate_sentiment_analysis_image(sentiment):
     print("Created sentiment analysis image.")
 
 
+# if __name__ == "__main__":
+#     # main(sys.argv[1])
+#
+#     # Test image gen without calling api
+#
+#     username = "FinessTV"
+#     most_likes = 76
+#     most_retweets = 10
+#     most_quotes = 2
+#     likes_performance = {
+#         100: 19,
+#         500: 3,
+#         1000: 0,
+#         10000: 0
+#     }
+#     sentiment = -8
+
+#     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
+#     generate_word_cloud_image(username)
+#     generate_likes_performance_image(likes_performance)
+#     generate_sentiment_analysis_image(sentiment)
+
+
 def main(username):
 
     # Get user info, such as id
@@ -803,6 +826,7 @@ def main(username):
         # How many tweets with more than X likes
         likes_performance = {
             100: len(df[df['like_count'] > 100]),
+            # 500 likes metric only used in 4 image format
             500: len(df[df['like_count'] > 500]),
             1000: len(df[df['like_count'] > 1000]),
             10000: len(df[df['like_count'] > 10000])
@@ -816,42 +840,23 @@ def main(username):
         #                                                      likes_performance)
 
         # generate_word_clouds_and_sentiment_analysis_image(username, sentiment)
-        
+
         # New 4 image format #
-        
+
         # Generate image 1 - Highest metrics
-        generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
-        
+        generate_highest_metrics_image(
+            username, most_likes, most_retweets, most_quotes)
+
         # Generate image 2 - Word cloud
         generate_word_cloud_image(username)
-        
+
         # Generate image 3 - Likes performance
-        generate_likes_performance_image(likes_performance)
-        
+        generate_likes_performance_image(username, likes_performance)
+
         # Generate image 4 - Sentiment analysis
-        generate_sentiment_analysis_image(sentiment)
+        generate_sentiment_analysis_image(username, sentiment)
 
         return True
 
     else:
         return False
-
-# if __name__ == "__main__":
-#     # main(sys.argv[1])
-
-#     username = "FinessTV"
-#     most_likes = 76
-#     most_retweets = 10
-#     most_quotes = 2
-#     likes_performance = {
-#         100: 19,
-#         500: 3,
-#         1000: 0,
-#         10000: 0
-#     }
-#     sentiment = -8
-
-#     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
-#     generate_word_cloud_image(username)
-#     generate_likes_performance_image(likes_performance)
-#     generate_sentiment_analysis_image(sentiment)
