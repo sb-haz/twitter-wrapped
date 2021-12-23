@@ -381,18 +381,20 @@ def generate_highest_metrics_and_likes_performance_image(username,
 
 #######################################################################################################################
 
+tweet_wrapped_watermark = ["@TweetWrapped"]
+
 global_font = {
     "title": ImageFont.truetype("fonts/theboldfont.ttf", 35),
-    "text": ImageFont.truetype("fonts/PoetsenOne-Regular.ttf", 30),
+    "text": ImageFont.truetype("fonts/coolvetica-rg.otf", 30),
     "number": ImageFont.truetype("fonts/theboldfont.ttf", 50),
     "watermark": ImageFont.truetype("fonts/theboldfont.ttf", 20)
 }
 
 global_font_large = {
     "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
-    "text": ImageFont.truetype("fonts/PoetsenOne-Regular.ttf", 60),
+    "text": ImageFont.truetype("fonts/coolvetica-rg.otf", 60),
     "number": ImageFont.truetype("fonts/theboldfont.ttf", 100),
-    "watermark": ImageFont.truetype("fonts/theboldfont.ttf", 20)
+    "watermark": ImageFont.truetype("fonts/theboldfont.ttf", 40)
 }
 
 global_font_colour = {
@@ -413,6 +415,8 @@ global_text_pos_large = {
     "y": 75,
     "spacer": 100
 }
+
+
 
 
 def generate_word_cloud_image(username):
@@ -471,15 +475,13 @@ def generate_word_cloud_image(username):
     title_text = ["What you're Tweeting."]
     #title_text = [username + ",", "Tweets Visualized."]
 
-    tweet_wrapped_watermark = ["@TweetWrapped"]
-
     # Draw title
     draw.text((x_pos, y_pos), title_text[0],
               font_colour["title"], font=font["title"])
     #draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
 
     # Draw watermark
-    draw.text((image_width - 175, image_height - 30),
+    draw.text((image_width - 350, image_height - 60),
               tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
 
     # Save
@@ -541,6 +543,10 @@ def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
     draw.text((temp_x_pos, y_pos + spacer*6),
               metrics_values[2], font_colour["number"], font=font["number"])
 
+    # Draw watermark
+    draw.text((image_width - 175, image_height - 30),
+              tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
+    
     # Save image
     img.save("img/outputs/highest_metrics/" +
              username + ".png")
@@ -565,27 +571,30 @@ def generate_likes_performance_image(likes_performance):
 
     lp_title_text = ["Get Any Big Tweets?"]  # LP = 'likes performance'
 
-    lp_text = ["> 100 likes.", "> 1,000 likes.", "> 10,000 likes."]
-    lp_values = [str(likes_performance[100]), str(
+    lp_text = ["> 100 likes.", "> 500 likes.", "> 1,000 likes.", "> 10,000 likes."]
+    lp_values = [str(likes_performance[100]), str(likes_performance[500]), str(
         likes_performance[1000]), str(likes_performance[10000])]
     lp_values_additional_text = ["tweets"]
 
     # Likes Performance section
     # Right align
-    title_width = font["title"].getsize(lp_title_text[0])[0]
-    temp_x_pos = image_width - x_pos - title_width
+    #title_width = font["title"].getsize(lp_title_text[0])[0]
+    #temp_x_pos = image_width - x_pos - title_width
 
     # Width to right align
     txt_width_0 = font["text"].getsize(lp_text[0])[0]
     txt_width_1 = font["text"].getsize(lp_text[1])[0]
     txt_width_2 = font["text"].getsize(lp_text[2])[0]
+    txt_width_3 = font["text"].getsize(lp_text[3])[0]
 
     # Move base-level y-pos down
     # not relevant with 4 images, so ignore for now
     #y_pos = image_height/1.8
 
     # Draw title
-    draw.text((temp_x_pos, y_pos),
+    # Right-align not used currently
+    # use temp_x_pos for right-align
+    draw.text((x_pos, y_pos),
               lp_title_text[0], font_colour["title"], font=font["title"])
 
     # Draw lp text
@@ -600,6 +609,10 @@ def generate_likes_performance_image(likes_performance):
     temp_x_pos = image_width - x_pos - txt_width_2
     draw.text((temp_x_pos, y_pos + spacer*4.75),
               lp_text[2], font_colour["text"], font=font["text"])
+    
+    temp_x_pos = image_width - x_pos - txt_width_3
+    draw.text((temp_x_pos, y_pos + spacer*6.25),
+              lp_text[3], font_colour["text"], font=font["text"])
 
     # Draw lp values
     draw.text((x_pos, y_pos + spacer*1.75),
@@ -608,18 +621,27 @@ def generate_likes_performance_image(likes_performance):
               lp_values[1], font_colour["number"], font=font["number"])
     draw.text((x_pos, y_pos + spacer*4.75),
               lp_values[2], font_colour["number"], font=font["number"])
+    draw.text((x_pos, y_pos + spacer*6.25),
+              lp_values[3], font_colour["number"], font=font["number"])
 
     # Draw additional text 'twitter' next to lp values
     value_width_1 = font["title"].getsize(lp_values[0])[0]
     value_width_2 = font["title"].getsize(lp_values[1])[0]
     value_width_3 = font["title"].getsize(lp_values[2])[0]
-    draw.text((value_width_1 + x_pos + 50, y_pos + spacer*1.8),
+    value_width_4 = font["title"].getsize(lp_values[3])[0]
+    draw.text((value_width_1 + x_pos + 25, y_pos + spacer*1.8),
               lp_values_additional_text[0], font_colour["text"], font=font["text"])
-    draw.text((value_width_2 + x_pos + 50, y_pos + spacer*3.3),
+    draw.text((value_width_2 + x_pos + 25, y_pos + spacer*3.3),
               lp_values_additional_text[0], font_colour["text"], font=font["text"])
-    draw.text((value_width_3 + x_pos + 50, y_pos + spacer*4.8),
+    draw.text((value_width_3 + x_pos + 25, y_pos + spacer*4.8),
+              lp_values_additional_text[0], font_colour["text"], font=font["text"])
+    draw.text((value_width_4 + x_pos + 25, y_pos + spacer*6.3),
               lp_values_additional_text[0], font_colour["text"], font=font["text"])
 
+    # Draw watermark
+    draw.text((image_width - 175, image_height - 30),
+              tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
+    
     # Save image
     img.save("img/outputs/likes_performance/" +
              username + ".png")
@@ -727,6 +749,10 @@ def generate_sentiment_analysis_image(sentiment):
         0] + temp_x_pos + 25
     img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 4.1)))
 
+    # Draw watermark
+    draw.text((image_width - 175, image_height - 30),
+              tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
+    
     # Save
     img.save("img/outputs/sentiment_analysis/" + username + ".png")
     print("Created sentiment analysis image.")
@@ -741,6 +767,7 @@ if __name__ == "__main__":
     most_quotes = 2
     likes_performance = {
         100: 19,
+        500: 3,
         1000: 0,
         10000: 0
     }
