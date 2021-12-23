@@ -4,16 +4,12 @@ twitter_credentials.py
 # User tweets / word clouds
 # Remove contents but keep folder
 user_tweets/*
-img/outputs/big_tweets/*
-img/outputs/word_clouds/*
-img/outputs/sentiment/*
-img/outputs/word_clouds/*
+img/outputs/highest_metrics_and_likes_performance/*
+img/outputs/word_clouds_and_sentiment_analysis/*
 
 !user_tweets/.gitkeep
-!img/outputs/big_tweets/.gitkeep
-!img/outputs/word_clouds/.gitkeep
-!img/outputs/sentiment/.gitkeep
-!img/outputs/word_clouds/.gitkeep
+!img/outputs/highest_metrics_and_likes_performance/.gitkeep
+!img/outputs/word_clouds_and_sentiment_analysis/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
