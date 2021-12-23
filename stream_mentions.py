@@ -2,6 +2,8 @@ import tweepy
 import twitter_credentials
 import json
 
+import generate_image
+
 bearer_token = twitter_credentials.bearer_token
 consumer_key = twitter_credentials.consumer_key
 consumer_secret = twitter_credentials.consumer_secret
@@ -25,8 +27,14 @@ class streamListener(tweepy.Stream):
         tweet_username = clean_data['user']['screen_name']  # screen_name
         tweet_text = "@" + tweet_username
 
-        respondToTweet(tweet_text, tweet_id)
-        return True
+        # Call twitter api to get user data
+        # Store in file and data structures
+        # Generate and save images
+        if generate_image.main():
+
+            # Reply to user with their generated images
+            respondToTweet(tweet_text, tweet_id)
+            return True
 
     def on_error(self, status):
         print(status)
