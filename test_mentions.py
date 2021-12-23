@@ -47,12 +47,7 @@ def followStream():
 
 
 def respondToTweet(tweet_text, tweet_id):
-    #api = setUpAuth()
-
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    api = tweepy.API(auth=auth, retry_count=5)
-
+    api = setUpAuth()
     api.update_status(status=tweet_text, in_reply_to_status_id=tweet_id,
                       auto_populate_reply_metadata=True)
 
