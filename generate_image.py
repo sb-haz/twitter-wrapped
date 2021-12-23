@@ -170,15 +170,15 @@ def generate_word_clouds_and_sentiment_analysis_image(username, sentiment):
         sentiment_emoji = Image.open(
             "img/emojis/beaming-face-with-smiling-eyes_1f601.png")
     elif sentiment > 0:
-        sentiment_class = "BARELY HAPPY..."
+        sentiment_class = "BARELY HAPPY"
         sentiment_emoji = Image.open(
             "img/emojis/emoji-upside-down-face_1f643.png")
     elif sentiment > -5:
-        sentiment_class = "SAD..."
+        sentiment_class = "SAD"
         sentiment_emoji = Image.open(
             "img/emojis/face-with-head-bandage_1f915.png")
     else:
-        sentiment_class = "DOWN TERRIBLE..."
+        sentiment_class = "DOWN BAD"
         sentiment_emoji = Image.open("img\emojis\sleepy-face_1f62a.png")
 
     # Resize emoji
@@ -599,19 +599,19 @@ def generate_likes_performance_image(likes_performance):
 
     # Draw lp text
     temp_x_pos = image_width - x_pos - txt_width_0
-    draw.text((temp_x_pos, y_pos + spacer*1.75),
+    draw.text((temp_x_pos, y_pos + spacer*1.8),
               lp_text[0], font_colour["text"], font=font["text"])
 
     temp_x_pos = image_width - x_pos - txt_width_1
-    draw.text((temp_x_pos, y_pos + spacer*3.25),
+    draw.text((temp_x_pos, y_pos + spacer*3.3),
               lp_text[1], font_colour["text"], font=font["text"])
 
     temp_x_pos = image_width - x_pos - txt_width_2
-    draw.text((temp_x_pos, y_pos + spacer*4.75),
+    draw.text((temp_x_pos, y_pos + spacer*4.8),
               lp_text[2], font_colour["text"], font=font["text"])
     
     temp_x_pos = image_width - x_pos - txt_width_3
-    draw.text((temp_x_pos, y_pos + spacer*6.25),
+    draw.text((temp_x_pos, y_pos + spacer*6.3),
               lp_text[3], font_colour["text"], font=font["text"])
 
     # Draw lp values
@@ -687,12 +687,12 @@ def generate_sentiment_analysis_image(sentiment):
 
     # Resize emoji
     (emoji_width, emoji_height) = (
-        sentiment_emoji.width/2.25, sentiment_emoji.height/2.25)
+        sentiment_emoji.width/3, sentiment_emoji.height/3)
     sentiment_emoji = sentiment_emoji.resize(
         (int(emoji_width), int(emoji_height)))
 
     # Sentiment title
-    sentiment_title = ["How Did You Feel?"]
+    sentiment_title = ["How were you feeling?", "Happy or Sad?"]
 
     # Sentiment text
     sentiment_text = ["Emotionally your tweets", "scored", str(
@@ -702,52 +702,56 @@ def generate_sentiment_analysis_image(sentiment):
     # not relevant for 4 images, so ignore
     # y_pos = image_height/1.5
 
-    # Draw sentiment title, right align
-    title_width = font["title"].getsize(sentiment_title[0])[0]
-    temp_x_pos = image_width - x_pos - title_width
-    draw.text((temp_x_pos, y_pos + spacer * 0.4),
+    # Draw sentiment title
+    # Not using right-align
+    # use temp_x_pos for right-align
+    #title_width = font["title"].getsize(sentiment_title[0])[0]
+    #temp_x_pos = image_width - x_pos - title_width
+    draw.text((x_pos, y_pos),
               sentiment_title[0], font_colour["title"], font=font["title"])
-
+    draw.text((x_pos, y_pos + spacer*1.1),
+              sentiment_title[1], font_colour["title"], font=font["title"])
+    
     # Item 1
     # Draw text 1
-    draw.text((x_pos, y_pos + spacer * 1.5),
+    draw.text((x_pos, y_pos + spacer * 3),
               sentiment_text[0], font_colour["text"], font=font["text"])
 
     # Item 2
     # Draw text 2
-    draw.text((x_pos, y_pos + spacer * 2.75),
+    draw.text((x_pos, y_pos + spacer * 4.25),
               sentiment_text[1], font_colour["text"], font=font["text"])
 
     # Item 3
     # Draw sentiment value
     # Get width of text to prevent overlap
     txtwrap_x_pos = font["text"].getsize(sentiment_text[1])[0] + x_pos + 25
-    draw.text((txtwrap_x_pos, y_pos + spacer * 2.6),
+    draw.text((txtwrap_x_pos, y_pos + spacer * 4.2),
               sentiment_text[2], font_colour["number"], font=font["number"])
-
-    # Item 3
-    # Draw text 3
-    # Move text to be positioned after value number
-    txtwrap_x_pos = font["number"].getsize(sentiment_text[2])[
-        0] + txtwrap_x_pos + 25
-    draw.text((txtwrap_x_pos, y_pos + spacer * 2.75),
-              sentiment_text[3], font_colour["text"], font=font["text"])
 
     # Item 4
     # Draw text 4
-    draw.text((x_pos, y_pos + spacer * 4.25),
-              sentiment_text[4], font_colour["text"], font=font["text"])
+    # Move text to be positioned after value number
+    txtwrap_x_pos = font["number"].getsize(sentiment_text[2])[
+        0] + txtwrap_x_pos + 25
+    draw.text((txtwrap_x_pos, y_pos + spacer * 4.25),
+              sentiment_text[3], font_colour["text"], font=font["text"])
 
     # Item 5
+    # Draw text 5
+    draw.text((x_pos, y_pos + spacer * 5.5),
+              sentiment_text[4], font_colour["text"], font=font["text"])
+
+    # Item 6
     # Draw sentiment class
     temp_x_pos = font["text"].getsize(sentiment_text[4])[0] + x_pos + 25
-    draw.text((temp_x_pos, y_pos + spacer * 4.1),
+    draw.text((temp_x_pos, y_pos + spacer * 5.5),
               sentiment_text[5], font_colour["number"], font=font["number"])
 
     # Draw sentiment emoji after sentiment class
     txtwrap_x_pos = font["number"].getsize(sentiment_text[5])[
         0] + temp_x_pos + 25
-    img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 4.1)))
+    img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 5.4)))
 
     # Draw watermark
     draw.text((image_width - 175, image_height - 30),
@@ -771,7 +775,7 @@ if __name__ == "__main__":
         1000: 0,
         10000: 0
     }
-    sentiment = -1.0
+    sentiment = -11.0
 
     generate_word_cloud_image(username)
     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
