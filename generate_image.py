@@ -382,7 +382,7 @@ def generate_highest_metrics_and_likes_performance_image(username,
 #######################################################################################################################
 
 def generate_word_cloud_image(username):
-    
+
     # Get user data
     text = open('user_tweets\\' + username + '.txt',
                 'r', encoding='utf-8').read()
@@ -404,8 +404,8 @@ def generate_word_cloud_image(username):
         stopwords=stopwords,
         background_color='black',
         include_numbers=False
-        #margin = 10, background_color = None, mode = 'RGBA',
-        #color_func = lambda *args, **kwargs: (255,255,255) # text colour
+        # margin = 10, background_color = None, mode = 'RGBA',
+        # color_func = lambda *args, **kwargs: (255,255,255) # text colour
     )
 
     # Generate
@@ -456,10 +456,10 @@ def generate_word_cloud_image(username):
     # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
     print("Created word cloud image.")
-   
-   
+
+
 def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
-    
+
     # Open black image
     img = Image.open("img/templates/black_500x500.png")
     draw = ImageDraw.Draw(img)
@@ -490,7 +490,6 @@ def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
     metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
     metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
 
-    
     # Draw title
     draw.text((x_pos, y_pos), title_text[0],
               font_colour["title"], font=font["title"])
@@ -527,7 +526,7 @@ def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
     img.save("img/outputs/highest_metrics/" +
              username + ".png")
     print("Created highest metrics image.")
-    
+
 
 def generate_likes_performance_image(likes_performance):
 
@@ -616,7 +615,7 @@ def generate_likes_performance_image(likes_performance):
     img.save("img/outputs/likes_performance/" +
              username + ".png")
     print("Created likes performance image.")
-        
+
 
 def generate_sentiment_analysis_image(sentiment):
 
@@ -679,7 +678,7 @@ def generate_sentiment_analysis_image(sentiment):
         sentiment), "meaning", "you were...", sentiment_class]
 
     # Move base-level y-pos down
-    # not relevant for 4 images, so ignore 
+    # not relevant for 4 images, so ignore
     # y_pos = image_height/1.5
 
     # Draw sentiment title, right align
@@ -735,24 +734,24 @@ def generate_sentiment_analysis_image(sentiment):
 
 
 if __name__ == "__main__":
-    #main(sys.argv[1])
-    
-    username="FinessTV"
+    # main(sys.argv[1])
+
+    username = "FinessTV"
     most_likes = 76
     most_retweets = 10
     most_quotes = 2
     likes_performance = {
-            100: 19,
-            1000: 0,
-            10000: 0
-        }
+        100: 19,
+        1000: 0,
+        10000: 0
+    }
     sentiment = -1.0
-    
+
     generate_word_cloud_image(username)
     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
     generate_likes_performance_image(likes_performance)
     generate_sentiment_analysis_image(sentiment)
-    
+
 
 def main(username):
 
@@ -794,27 +793,26 @@ def main(username):
             10000: len(df[df['like_count'] > 10000])
         }
 
-        
         generate_highest_metrics_and_likes_performance_image(username,
                                                              most_likes,
                                                              most_retweets,
                                                              most_quotes,
                                                              likes_performance)
-        
+
         generate_word_clouds_and_sentiment_analysis_image(username, sentiment)
-        
+
         # Generate image 1 - Word cloud
         generate_word_cloud_image()
-        
+
         # Generate image 2 - Highest metrics
         generate_highest_metrics_image()
-    
+
         # Generate image 3 - Likes performance
         generate_likes_performance_image()
-        
+
         # Generate image 4 - Sentiment analysis
         generate_sentiment_analysis_image()
-        
+
         return True
 
     else:
