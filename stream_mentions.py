@@ -30,6 +30,7 @@ class streamListener(tweepy.Stream):
         # Call twitter api to get user data
         # Store in file and data structures
         # Generate and save images
+        print("Received request from " + tweet_username + "!")
         if generate_image.main(tweet_username):
 
             # Reply to user with their generated images
@@ -66,12 +67,13 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
         response = api.media_upload(filename)
         media_ids.append(response.media_id)
 
+    print("Responding with their wrapped images...")
     # Tweet response to user, with images
     api.update_status(status=tweet_text,
                       in_reply_to_status_id=tweet_id,
                       media_ids=media_ids,
                       auto_populate_reply_metadata=True)
-
+    print("Done!")
 
 if __name__ == "__main__":
     followStream()
