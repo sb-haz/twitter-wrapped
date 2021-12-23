@@ -170,15 +170,15 @@ def generate_word_clouds_and_sentiment_analysis_image(username, sentiment):
         sentiment_emoji = Image.open(
             "img/emojis/beaming-face-with-smiling-eyes_1f601.png")
     elif sentiment > 0:
-        sentiment_class = "BARELY HAPPY"
+        sentiment_class = "BARELY HAPPY..."
         sentiment_emoji = Image.open(
             "img/emojis/emoji-upside-down-face_1f643.png")
     elif sentiment > -5:
-        sentiment_class = "SAD"
+        sentiment_class = "SAD..."
         sentiment_emoji = Image.open(
             "img/emojis/face-with-head-bandage_1f915.png")
     else:
-        sentiment_class = "DOWN BAD"
+        sentiment_class = "DOWN TERRIBLE..."
         sentiment_emoji = Image.open("img\emojis\sleepy-face_1f62a.png")
 
     # Resize emoji
@@ -666,7 +666,7 @@ def generate_sentiment_analysis_image(sentiment):
 
     # Classify based on numerical sentiment value (-100 to 100)
     if sentiment > 10:
-        sentiment_class = "VERY HAPPY!"
+        sentiment_class = "SUPER HAPPY!" # EMOJI 
         sentiment_emoji = Image.open(
             "img/emojis/grinning-face-with-sweat_1f605.png")
     elif sentiment > 5:
@@ -674,17 +674,17 @@ def generate_sentiment_analysis_image(sentiment):
         sentiment_emoji = Image.open(
             "img/emojis/beaming-face-with-smiling-eyes_1f601.png")
     elif sentiment > 0:
-        sentiment_class = "BARELY HAPPY..."
+        sentiment_class = "KINDA HAPPY..." # EMOJI
         sentiment_emoji = Image.open(
             "img/emojis/emoji-upside-down-face_1f643.png")
     elif sentiment > -5:
-        sentiment_class = "SAD..."
+        sentiment_class = "SAD!"
         sentiment_emoji = Image.open(
             "img/emojis/face-with-head-bandage_1f915.png")
     else:
-        sentiment_class = "DOWN TERRIBLE..."
+        sentiment_class = "DOWN BAD!"
         sentiment_emoji = Image.open("img\emojis\sleepy-face_1f62a.png")
-
+        
     # Resize emoji
     (emoji_width, emoji_height) = (
         sentiment_emoji.width/3, sentiment_emoji.height/3)
@@ -695,8 +695,8 @@ def generate_sentiment_analysis_image(sentiment):
     sentiment_title = ["How were you feeling?", "Happy or Sad?"]
 
     # Sentiment text
-    sentiment_text = ["Emotionally your tweets", "scored", str(
-        sentiment), "meaning", "you were...", sentiment_class]
+    sentiment_text = ["Emotionally  your  tweets", "scored", str(
+        sentiment), "meaning  you", "were...", sentiment_class]
 
     # Move base-level y-pos down
     # not relevant for 4 images, so ignore
@@ -748,10 +748,16 @@ def generate_sentiment_analysis_image(sentiment):
     draw.text((temp_x_pos, y_pos + spacer * 5.5),
               sentiment_text[5], font_colour["number"], font=font["number"])
 
-    # Draw sentiment emoji after sentiment class
-    txtwrap_x_pos = font["number"].getsize(sentiment_text[5])[
-        0] + temp_x_pos + 25
-    img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 5.4)))
+    # If sentiment class is too long, draw emoji on new line
+    # e.g 'SUPER HAPPY!' is too long
+    if sentiment_class == "SUPER HAPPY!" or sentiment_class == "KINDA HAPPY...":
+        # Draw sentiment emoji on new line
+        img.paste(sentiment_emoji, (x_pos, int(y_pos + spacer * 6.8)))
+    else:
+        # Draw sentiment emoji after sentiment class
+        txtwrap_x_pos = font["number"].getsize(sentiment_text[5])[
+            0] + temp_x_pos + 25
+        img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 5.4)))
 
     # Draw watermark
     draw.text((image_width - 175, image_height - 30),
@@ -761,7 +767,7 @@ def generate_sentiment_analysis_image(sentiment):
     img.save("img/outputs/sentiment_analysis/" + username + ".png")
     print("Created sentiment analysis image.")
 
-
+    
 if __name__ == "__main__":
     # main(sys.argv[1])
 
@@ -775,10 +781,10 @@ if __name__ == "__main__":
         1000: 0,
         10000: 0
     }
-    sentiment = -11.0
-
-    generate_word_cloud_image(username)
+    sentiment = -8
+    
     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
+    generate_word_cloud_image(username)
     generate_likes_performance_image(likes_performance)
     generate_sentiment_analysis_image(sentiment)
 
