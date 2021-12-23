@@ -644,8 +644,6 @@ def generate_sentiment_analysis_image(sentiment):
     y_pos = 50
     spacer = 50
 
-    # Sentiment #
-
     # Classify based on numerical sentiment value (-100 to 100)
     if sentiment > 10:
         sentiment_class = "VERY HAPPY!"
@@ -676,12 +674,13 @@ def generate_sentiment_analysis_image(sentiment):
     # Sentiment title
     sentiment_title = ["How Did You Feel?"]
 
-    # Sentiment text            0                   1          2               3          4               5
+    # Sentiment text
     sentiment_text = ["Emotionally your tweets", "scored", str(
         sentiment), "meaning", "you were...", sentiment_class]
 
     # Move base-level y-pos down
-    y_pos = image_height/1.5
+    # not relevant for 4 images, so ignore 
+    # y_pos = image_height/1.5
 
     # Draw sentiment title, right align
     title_width = font["title"].getsize(sentiment_title[0])[0]
@@ -689,17 +688,17 @@ def generate_sentiment_analysis_image(sentiment):
     draw.text((temp_x_pos, y_pos + spacer * 0.4),
               sentiment_title[0], font_colour["title"], font=font["title"])
 
-    # 00000
+    # Item 1
     # Draw text 1
     draw.text((x_pos, y_pos + spacer * 1.5),
               sentiment_text[0], font_colour["text"], font=font["text"])
 
-    # Item 1
+    # Item 2
     # Draw text 2
     draw.text((x_pos, y_pos + spacer * 2.75),
               sentiment_text[1], font_colour["text"], font=font["text"])
 
-    # Item 2
+    # Item 3
     # Draw sentiment value
     # Get width of text to prevent overlap
     txtwrap_x_pos = font["text"].getsize(sentiment_text[1])[0] + x_pos + 25
@@ -732,7 +731,7 @@ def generate_sentiment_analysis_image(sentiment):
 
     # Save
     img.save("img/outputs/sentiment_analysis/" + username + ".png")
-    print("Created likes performance image.")
+    print("Created sentiment analysis image.")
 
 
 if __name__ == "__main__":
@@ -747,13 +746,14 @@ if __name__ == "__main__":
             1000: 0,
             10000: 0
         }
+    sentiment = -1.0
     
     generate_word_cloud_image(username)
     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
     generate_likes_performance_image(likes_performance)
+    generate_sentiment_analysis_image(sentiment)
     
 
-        
 def main(username):
 
     # Get user info, such as id
