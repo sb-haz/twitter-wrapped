@@ -139,9 +139,9 @@ def generate_word_clouds_and_sentiment_analysis_image(username, sentiment):
     }
 
     font_colour = {
-        "title": (213, 226, 26),
-        "text": (37, 172, 130),
-        "number": (213, 226, 26)
+        "title": (28, 45, 137),
+        "text": (28, 45, 137),
+        "number": (28, 45, 137)
     }
 
     # Text position
@@ -270,9 +270,9 @@ def generate_highest_metrics_and_likes_performance_image(username,
     }
 
     font_colour = {
-        "title": (213, 226, 26),
-        "text": (37, 172, 130),
-        "number": (213, 226, 26)
+        "title": (28, 45, 137),
+        "text": (28, 45, 137),
+        "number": (28, 45, 137)
     }
 
     # Text position
@@ -392,20 +392,19 @@ def generate_word_cloud_image(username):
 
     # Mask
     custom_mask = np.array(Image.open(
-        'img\\masks\\twitter_logo_500x500.png'))
+        'img\\masks\\twitter_logo_1000x1000.png'))
     font = 'fonts\\SFProDisplay-Light.ttf'
 
     # WordCloud attributes
     wordCloud = WordCloud(
-        width=500,
-        height=500,
+        width=1000, height=1000,
         font_path=font,
         mask=custom_mask,
         stopwords=stopwords,
-        background_color='black',
+        background_color=(80, 54, 89),
+        color_func = lambda *args, **kwargs: (199, 219, 115), # text colour
         include_numbers=False
         # margin = 10, background_color = None, mode = 'RGBA',
-        # color_func = lambda *args, **kwargs: (255,255,255) # text colour
     )
 
     # Generate
@@ -428,31 +427,37 @@ def generate_word_cloud_image(username):
     image_width, image_height = img.size
 
     font = {
-        "title": ImageFont.truetype("fonts/theboldfont.ttf", 35),
-        "text": ImageFont.truetype("fonts/PoetsenOne-Regular.ttf", 30),
-        "number": ImageFont.truetype("fonts/theboldfont.ttf", 50)
+        "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
+        "text": ImageFont.truetype("fonts/PoetsenOne-Regular.ttf", 60),
+        "number": ImageFont.truetype("fonts/theboldfont.ttf", 100),
+        "watermark": ImageFont.truetype("fonts/theboldfont.ttf", 20)
     }
 
     font_colour = {
-        "title": (213, 226, 26),
-        "text": (37, 172, 130),
-        "number": (213, 226, 26)
+        "title": (228, 179, 143),
+        "text": (80,54,89),
+        "number": (28, 45, 137)
     }
 
     # Text position
-    x_pos = 50
-    y_pos = 50
-    spacer = 50
+    x_pos = 75
+    y_pos = 75
+    spacer = 100
 
     # Content
     title_text = ["What you're Tweeting."]
     #title_text = [username + ",", "Tweets Visualized."]
+    
+    tweet_wrapped_watermark = ["@TweetWrapped"]
 
     # Draw title
     draw.text((x_pos, y_pos), title_text[0],
               font_colour["title"], font=font["title"])
     #draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
 
+    # Draw watermark
+    draw.text((image_width - 175, image_height - 30), tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
+    
     # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
     print("Created word cloud image.")
@@ -461,7 +466,7 @@ def generate_word_cloud_image(username):
 def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
 
     # Open black image
-    img = Image.open("img/templates/black_500x500.png")
+    img = Image.open("img/templates/green_500x500.png")
     draw = ImageDraw.Draw(img)
 
     # Template size
@@ -474,9 +479,9 @@ def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
     }
 
     font_colour = {
-        "title": (213, 226, 26),
-        "text": (37, 172, 130),
-        "number": (213, 226, 26)
+        "title": (28, 45, 137),
+        "text": (28, 45, 137),
+        "number": (28, 45, 137)
     }
 
     # Text position
@@ -531,7 +536,7 @@ def generate_highest_metrics_image(most_likes, most_retweets, most_quotes):
 def generate_likes_performance_image(likes_performance):
 
     # Open black image
-    img = Image.open("img/templates/black_500x500.png")
+    img = Image.open("img/templates/green_500x500.png")
     draw = ImageDraw.Draw(img)
 
     # Template size
@@ -544,9 +549,9 @@ def generate_likes_performance_image(likes_performance):
     }
 
     font_colour = {
-        "title": (213, 226, 26),
-        "text": (37, 172, 130),
-        "number": (213, 226, 26)
+        "title": (28, 45, 137),
+        "text": (28, 45, 137),
+        "number": (28, 45, 137)
     }
 
     # Text position
@@ -620,7 +625,7 @@ def generate_likes_performance_image(likes_performance):
 def generate_sentiment_analysis_image(sentiment):
 
     # Open black image
-    img = Image.open("img/templates/black_500x500.png")
+    img = Image.open("img/templates/green_500x500.png")
     draw = ImageDraw.Draw(img)
 
     # Template size
@@ -633,9 +638,9 @@ def generate_sentiment_analysis_image(sentiment):
     }
 
     font_colour = {
-        "title": (213, 226, 26),
-        "text": (37, 172, 130),
-        "number": (213, 226, 26)
+        "title": (28, 45, 137),
+        "text": (28, 45, 137),
+        "number": (28, 45, 137)
     }
 
     # Text position
@@ -748,9 +753,9 @@ if __name__ == "__main__":
     sentiment = -1.0
 
     generate_word_cloud_image(username)
-    generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
-    generate_likes_performance_image(likes_performance)
-    generate_sentiment_analysis_image(sentiment)
+    #generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
+    #generate_likes_performance_image(likes_performance)
+    #generate_sentiment_analysis_image(sentiment)
 
 
 def main(username):
