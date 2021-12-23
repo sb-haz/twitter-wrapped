@@ -66,7 +66,7 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
 
     # Get images
     filenames = ['img/outputs/highest_metrics/' + tweet_username + '.png',
-                 'img/outputs/word_clouds' + tweet_username + '.png',
+                 'img/outputs/word_clouds/' + tweet_username + '.png',
                  'img/outputs/highest_metrics/' + tweet_username + '.png',
                  'img/outputs/sentiment_analysis/' + tweet_username + '.png']
     
