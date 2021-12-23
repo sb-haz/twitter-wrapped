@@ -767,27 +767,6 @@ def generate_sentiment_analysis_image(sentiment):
     print("Created sentiment analysis image.")
 
 
-if __name__ == "__main__":
-    # main(sys.argv[1])
-
-    username = "FinessTV"
-    most_likes = 76
-    most_retweets = 10
-    most_quotes = 2
-    likes_performance = {
-        100: 19,
-        500: 3,
-        1000: 0,
-        10000: 0
-    }
-    sentiment = -8
-
-    generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
-    generate_word_cloud_image(username)
-    generate_likes_performance_image(likes_performance)
-    generate_sentiment_analysis_image(sentiment)
-
-
 def main(username):
 
     # Get user info, such as id
@@ -824,31 +803,55 @@ def main(username):
         # How many tweets with more than X likes
         likes_performance = {
             100: len(df[df['like_count'] > 100]),
+            500: len(df[df['like_count'] > 500]),
             1000: len(df[df['like_count'] > 1000]),
             10000: len(df[df['like_count'] > 10000])
         }
 
-        generate_highest_metrics_and_likes_performance_image(username,
-                                                             most_likes,
-                                                             most_retweets,
-                                                             most_quotes,
-                                                             likes_performance)
+        # Old 2 image format #
+        # generate_highest_metrics_and_likes_performance_image(username,
+        #                                                      most_likes,
+        #                                                      most_retweets,
+        #                                                      most_quotes,
+        #                                                      likes_performance)
 
-        generate_word_clouds_and_sentiment_analysis_image(username, sentiment)
-
-        # Generate image 1 - Word cloud
-        generate_word_cloud_image()
-
-        # Generate image 2 - Highest metrics
-        generate_highest_metrics_image()
-
+        # generate_word_clouds_and_sentiment_analysis_image(username, sentiment)
+        
+        # New 4 image format #
+        
+        # Generate image 1 - Highest metrics
+        generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
+        
+        # Generate image 2 - Word cloud
+        generate_word_cloud_image(username)
+        
         # Generate image 3 - Likes performance
-        generate_likes_performance_image()
-
+        generate_likes_performance_image(likes_performance)
+        
         # Generate image 4 - Sentiment analysis
-        generate_sentiment_analysis_image()
+        generate_sentiment_analysis_image(sentiment)
 
         return True
 
     else:
         return False
+
+# if __name__ == "__main__":
+#     # main(sys.argv[1])
+
+#     username = "FinessTV"
+#     most_likes = 76
+#     most_retweets = 10
+#     most_quotes = 2
+#     likes_performance = {
+#         100: 19,
+#         500: 3,
+#         1000: 0,
+#         10000: 0
+#     }
+#     sentiment = -8
+
+#     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
+#     generate_word_cloud_image(username)
+#     generate_likes_performance_image(likes_performance)
+#     generate_sentiment_analysis_image(sentiment)
