@@ -2,8 +2,10 @@ import tweepy
 import twitter_credentials
 import json
 
+# Create and save images
 import generate_image
 
+# Auth credentials
 bearer_token = twitter_credentials.bearer_token
 consumer_key = twitter_credentials.consumer_key
 consumer_secret = twitter_credentials.consumer_secret
@@ -11,6 +13,7 @@ access_token = twitter_credentials.access_token
 access_token_secret = twitter_credentials.access_token_secret
 
 
+# Listener class
 class streamListener(tweepy.Stream):
     # overwrite on_data method
     def on_data(self, data):
@@ -42,6 +45,7 @@ class streamListener(tweepy.Stream):
         return True
 
 
+# Get authorisation access
 def setUpAuth():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -49,6 +53,7 @@ def setUpAuth():
     return api
 
 
+# Follow stream, listens for mentions
 def followStream():
     twitter_stream = streamListener(
         consumer_key, consumer_secret, access_token, access_token_secret)
