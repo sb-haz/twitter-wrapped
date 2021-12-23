@@ -55,13 +55,17 @@ def followStream():
     twitter_stream.filter(track=['@TweetWrapped create'])
 
 
+# Reply to the user
 def respondToTweet(tweet_username, tweet_text, tweet_id):
     api = setUpAuth()
 
+    # Get images
     filenames = ['img/outputs/highest_metrics/' + tweet_username + '.png',
                  'img/outputs/word_clouds' + tweet_username + '.png',
                  'img/outputs/highest_metrics/' + tweet_username + '.png',
                  'img/outputs/sentiment_analysis/' + tweet_username + '.png']
+    
+    # To contain ID of uploaded images
     media_ids = []
 
     # Upload the 2 images, and get media ids in response
@@ -75,6 +79,7 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
                       media_ids=media_ids,
                       auto_populate_reply_metadata=True)
     print("Task completed successfully!")
+
 
 if __name__ == "__main__":
     followStream()
