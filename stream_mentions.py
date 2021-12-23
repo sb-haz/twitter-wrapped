@@ -25,15 +25,15 @@ class streamListener(tweepy.Stream):
 
         tweet_id = clean_data['id']
         tweet_username = clean_data['user']['screen_name']  # screen_name
-        tweet_text = "@" + tweet_username
+        tweet_text = "@" + tweet_username + " Here's your 2021 Twitter Wrapped!"
 
         # Call twitter api to get user data
         # Store in file and data structures
         # Generate and save images
-        if generate_image.main():
+        if generate_image.main(tweet_username):
 
             # Reply to user with their generated images
-            respondToTweet(tweet_text, tweet_id)
+            respondToTweet(tweet_username, tweet_text, tweet_id)
             return True
 
     def on_error(self, status):
@@ -51,12 +51,25 @@ def setUpAuth():
 def followStream():
     twitter_stream = streamListener(
         consumer_key, consumer_secret, access_token, access_token_secret)
-    twitter_stream.filter(track=['@TweetWrapped hi'])
+    twitter_stream.filter(track=['@TweetWrapped create'])
 
 
-def respondToTweet(tweet_text, tweet_id):
+def respondToTweet(tweet_username, tweet_text, tweet_id):
     api = setUpAuth()
-    api.update_status(status=tweet_text, in_reply_to_status_id=tweet_id,
+
+    filenames = ['img/outputs/highest_metrics_and_likes_performance/' + tweet_username + '.png',
+                 'img/outputs/word_clouds_and_sentiment_analysis/' + tweet_username + '.png']
+    media_ids = []
+
+    # Upload the 2 images, and get media ids in response
+    for filename in filenames:
+        response = api.media_upload(filename)
+        media_ids.append(response.media_id)
+
+    # Tweet response to user, with images
+    api.update_status(status=tweet_text,
+                      in_reply_to_status_id=tweet_id,
+                      media_ids=media_ids,
                       auto_populate_reply_metadata=True)
 
 

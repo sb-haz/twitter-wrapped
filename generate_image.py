@@ -422,7 +422,7 @@ def generate_highest_metrics_and_likes_performance_image(username,
 
 
 def main(username):
-    
+
     # Get user info, such as id
     user = getUserInfo(username)
     # Get tweets of user by id
@@ -438,7 +438,7 @@ def main(username):
 
         # Carry out sentiment analysis
         df['sentiment'] = np.array([analyse_sentiment(tweet)
-                                for tweet in df['tweets']])
+                                    for tweet in df['tweets']])
 
         # Get average sentiment of all user tweets
         sentiment = np.average(df['sentiment']) * 100
@@ -463,23 +463,24 @@ def main(username):
 
         # Generate image 1
         generate_highest_metrics_and_likes_performance_image(username,
-                                                            most_likes,
-                                                            most_retweets,
-                                                            most_quotes,
-                                                            likes_performance)
+                                                             most_likes,
+                                                             most_retweets,
+                                                             most_quotes,
+                                                             likes_performance)
 
         # Generate image 2
         generate_word_clouds_and_sentiment_analysis_image(username, sentiment)
+        return True
 
     else:
-        exit()
-        
-if __name__ == "__main__":
-    main(sys.argv[1])
+        return False
+
+# if __name__ == "__main__":
+#    main(sys.argv[1])
 
     # Test without calling api
     #generate_image_one("Talal916", 6.0)
-    #generate_image_two("Talal916", 787, 16, 292, {
+    # generate_image_two("Talal916", 787, 16, 292, {
     #    100: 8,
     #    1000: 0,
     #    10000: 0
