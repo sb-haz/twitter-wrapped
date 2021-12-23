@@ -120,14 +120,6 @@ tweet_wrapped_watermark = ["@TweetWrapped"]
 
 # Fonts used in images
 global_font = {
-    "title": ImageFont.truetype("fonts/theboldfont.ttf", 35),
-    "text": ImageFont.truetype("fonts/coolvetica-rg.otf", 30),
-    "number": ImageFont.truetype("fonts/theboldfont.ttf", 50),
-    "watermark": ImageFont.truetype("fonts/theboldfont.ttf", 20)
-}
-
-# Large font sizes, used in word cloud image
-global_font_large = {
     "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
     "text": ImageFont.truetype("fonts/coolvetica-rg.otf", 60),
     "number": ImageFont.truetype("fonts/theboldfont.ttf", 100),
@@ -143,16 +135,16 @@ global_font_colour = {
 }
 
 # Text position and spacing
-global_text_pos = {
-    "x": 50,
-    "y": 50,
-    "spacer": 50
-}
+# global_text_pos = {
+#     "x": 50,
+#     "y": 50,
+#     "spacer": 50
+# }
 
 # Larger text position and spacing
-global_text_pos_large = {
-    "x": 75,
-    "y": 75,
+global_text_pos = {
+    "x": 100,
+    "y": 100,
     "spacer": 100
 }
 
@@ -161,7 +153,7 @@ global_text_pos_large = {
 def generate_highest_metrics_image(username, most_likes, most_retweets, most_quotes):
 
     # Open black image
-    img = Image.open("img/templates/purple_500x500.png")
+    img = Image.open("img/templates/purple_1000x1000.png")
     draw = ImageDraw.Draw(img)
 
     # Template size
@@ -213,7 +205,7 @@ def generate_highest_metrics_image(username, most_likes, most_retweets, most_quo
               metrics_values[2], font_colour["number"], font=font["number"])
 
     # Draw watermark
-    draw.text((image_width - 175, image_height - 30),
+    draw.text((image_width - 350, image_height - 60),
               tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
 
     # Save image
@@ -268,19 +260,20 @@ def generate_word_cloud_image(username):
     # Template size
     image_width, image_height = img.size
 
-    font = global_font_large
+    font = global_font
     font_colour = global_font_colour
 
-    x_pos = global_text_pos_large["x"]
-    y_pos = global_text_pos_large["y"]
-    spacer = global_text_pos_large["spacer"]
+    x_pos = global_text_pos["x"]
+    y_pos = global_text_pos["y"]
+    spacer = global_text_pos["spacer"]
 
     # Content
     title_text = ["What you're Tweeting."]
     #title_text = [username + ",", "Tweets Visualized."]
 
     # Draw title
-    draw.text((x_pos, y_pos), title_text[0],
+    # Since word cloud image is large, move text away from it
+    draw.text((x_pos-25, y_pos-25), title_text[0],
               font_colour["title"], font=font["title"])
     #draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
 
@@ -297,7 +290,7 @@ def generate_word_cloud_image(username):
 def generate_likes_performance_image(username, likes_performance):
 
     # Open black image
-    img = Image.open("img/templates/purple_500x500.png")
+    img = Image.open("img/templates/purple_1000x1000.png")
     draw = ImageDraw.Draw(img)
 
     # Template size
@@ -371,17 +364,17 @@ def generate_likes_performance_image(username, likes_performance):
     value_width_2 = font["title"].getsize(lp_values[1])[0]
     value_width_3 = font["title"].getsize(lp_values[2])[0]
     value_width_4 = font["title"].getsize(lp_values[3])[0]
-    draw.text((value_width_1 + x_pos + 25, y_pos + spacer*1.8),
+    draw.text((value_width_1 + x_pos + 50, y_pos + spacer*1.8),
               lp_values_additional_text[0], font_colour["text"], font=font["text"])
-    draw.text((value_width_2 + x_pos + 25, y_pos + spacer*3.3),
+    draw.text((value_width_2 + x_pos + 50, y_pos + spacer*3.3),
               lp_values_additional_text[0], font_colour["text"], font=font["text"])
-    draw.text((value_width_3 + x_pos + 25, y_pos + spacer*4.8),
+    draw.text((value_width_3 + x_pos + 50, y_pos + spacer*4.8),
               lp_values_additional_text[0], font_colour["text"], font=font["text"])
-    draw.text((value_width_4 + x_pos + 25, y_pos + spacer*6.3),
+    draw.text((value_width_4 + x_pos + 50, y_pos + spacer*6.3),
               lp_values_additional_text[0], font_colour["text"], font=font["text"])
 
     # Draw watermark
-    draw.text((image_width - 175, image_height - 30),
+    draw.text((image_width - 350, image_height - 60),
               tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
 
     # Save image
@@ -394,7 +387,7 @@ def generate_likes_performance_image(username, likes_performance):
 def generate_sentiment_analysis_image(username, sentiment):
 
     # Open black image
-    img = Image.open("img/templates/purple_500x500.png")
+    img = Image.open("img/templates/purple_1000x1000.png")
     draw = ImageDraw.Draw(img)
 
     # Template size
@@ -430,7 +423,7 @@ def generate_sentiment_analysis_image(username, sentiment):
 
     # Resize emoji
     (emoji_width, emoji_height) = (
-        sentiment_emoji.width/3, sentiment_emoji.height/3)
+        sentiment_emoji.width/2, sentiment_emoji.height/2)
     sentiment_emoji = sentiment_emoji.resize(
         (int(emoji_width), int(emoji_height)))
 
@@ -500,10 +493,10 @@ def generate_sentiment_analysis_image(username, sentiment):
         # Draw sentiment emoji after sentiment class
         txtwrap_x_pos = font["number"].getsize(sentiment_text[5])[
             0] + temp_x_pos + 25
-        img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 5.4)))
+        img.paste(sentiment_emoji, (txtwrap_x_pos, int(y_pos + spacer * 5.5)))
 
     # Draw watermark
-    draw.text((image_width - 175, image_height - 30),
+    draw.text((image_width - 350, image_height - 60),
               tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
 
     # Save
@@ -511,24 +504,24 @@ def generate_sentiment_analysis_image(username, sentiment):
     #print("Created sentiment analysis image.")
 
 
-# Test image gen without calling api
+# # Test image gen without calling api
 # if __name__ == "__main__":
-#     # main(sys.argv[1])
-#     username = "FinessTV"
-#     most_likes = 76
-#     most_retweets = 10
-#     most_quotes = 2
-#     likes_performance = {
-#         100: 19,
-#         500: 3,
-#         1000: 0,
-#         10000: 0
-#     }
-#     sentiment = -8
-#     generate_highest_metrics_image(most_likes, most_retweets, most_quotes)
-#     generate_word_cloud_image(username)
-#     generate_likes_performance_image(likes_performance)
-#     generate_sentiment_analysis_image(sentiment)
+#      # main(sys.argv[1])
+#      username = "FinessTV"
+#      most_likes = 76
+#      most_retweets = 10
+#      most_quotes = 2
+#      likes_performance = {
+#          100: 19,
+#          500: 3,
+#          1000: 0,
+#          10000: 0
+#      }
+#      sentiment = 11
+#      generate_highest_metrics_image(username, most_likes, most_retweets, most_quotes)
+#      generate_word_cloud_image(username)
+#      generate_likes_performance_image(username, likes_performance)
+#      generate_sentiment_analysis_image(username, sentiment)
 
 
 # Main method called by stream_mentions.py
