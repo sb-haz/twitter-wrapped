@@ -1,13 +1,11 @@
 from PIL import Image, ImageFont, ImageDraw
-import textwrap
 from wordcloud import WordCloud, STOPWORDS
-import tweepy
-import twitter_credentials
-import re
-import os
+from textblob import TextBlob  # sentiment analysis
+import tweepy, twitter_credentials
+import textwrap # not used currently, implement in future
+import re, os # regex / saving and loading tweets
 import numpy as np  # numerical python library
 import pandas as pd  # store content into dataframes
-from textblob import TextBlob  # sentiment analysis
 import sys  # running python file with args, remove later
 
 
@@ -31,8 +29,7 @@ def getUserInfo(user):
 def getUserRecentTweets(id):
     client = getClient()
     user_tweets = client.get_users_tweets(id=id,
-                                          tweet_fields=[
-                                              'public_metrics,created_at'],
+                                          tweet_fields=['public_metrics,created_at'],
                                           exclude=['retweets', 'replies'],
                                           max_results=100,
                                           #start_time = '2021-09-02T00:00:00.000Z'
@@ -118,9 +115,10 @@ def analyse_sentiment(tweet):
     else:
         return -1
 
-
+# Watermark text
 tweet_wrapped_watermark = ["@TweetWrapped"]
 
+# Fonts used in images
 global_font = {
     "title": ImageFont.truetype("fonts/theboldfont.ttf", 35),
     "text": ImageFont.truetype("fonts/coolvetica-rg.otf", 30),
@@ -128,6 +126,7 @@ global_font = {
     "watermark": ImageFont.truetype("fonts/theboldfont.ttf", 20)
 }
 
+# Large font sizes, used in word cloud image
 global_font_large = {
     "title": ImageFont.truetype("fonts/theboldfont.ttf", 70),
     "text": ImageFont.truetype("fonts/coolvetica-rg.otf", 60),
@@ -135,6 +134,7 @@ global_font_large = {
     "watermark": ImageFont.truetype("fonts/theboldfont.ttf", 40)
 }
 
+# Font colours
 global_font_colour = {
     "title": (228, 179, 143),
     "text": (179, 145, 143),
@@ -142,12 +142,14 @@ global_font_colour = {
     "watermark": (228, 179, 143)
 }
 
+# Text position and spacing
 global_text_pos = {
     "x": 50,
     "y": 50,
     "spacer": 50
 }
 
+# Larger text position and spacing
 global_text_pos_large = {
     "x": 75,
     "y": 75,
@@ -155,6 +157,72 @@ global_text_pos_large = {
 }
 
 
+# Generate image 1
+def generate_highest_metrics_image(username, most_likes, most_retweets, most_quotes):
+
+    # Open black image
+    img = Image.open("img/templates/purple_500x500.png")
+    draw = ImageDraw.Draw(img)
+
+    # Template size
+    image_width, image_height = img.size
+
+    font = global_font
+    font_colour = global_font_colour
+
+    x_pos = global_text_pos["x"]
+    y_pos = global_text_pos["y"]
+    spacer = global_text_pos["spacer"]
+
+    # Content
+    title_text = [username + ",", "You're popular."]
+
+    metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
+    metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
+
+    # Draw title
+    draw.text((x_pos, y_pos), title_text[0],
+              font_colour["title"], font=font["title"])
+    draw.text((x_pos, y_pos + spacer*1.1),
+              title_text[1], font_colour["title"], font=font["title"])
+
+    # Draw metric text
+    draw.text((x_pos, y_pos + spacer*3),
+              metrics_text[0], font_colour["text"], font=font["text"])
+    draw.text((x_pos, y_pos + spacer*4.5),
+              metrics_text[1], font_colour["text"], font=font["text"])
+    draw.text((x_pos, y_pos + spacer*6),
+              metrics_text[2], font_colour["text"], font=font["text"])
+
+    # Width to right align
+    num_width_0 = font["number"].getsize(metrics_values[0])[0]
+    num_width_1 = font["number"].getsize(metrics_values[1])[0]
+    num_width_2 = font["number"].getsize(metrics_values[2])[0]
+
+    # Draw metric values
+    temp_x_pos = image_width - x_pos - num_width_0
+    draw.text((temp_x_pos, y_pos + spacer*3),
+              metrics_values[0], font_colour["number"], font=font["number"])
+
+    temp_x_pos = image_width - x_pos - num_width_1
+    draw.text((temp_x_pos, y_pos + spacer*4.5),
+              metrics_values[1], font_colour["number"], font=font["number"])
+
+    temp_x_pos = image_width - x_pos - num_width_2
+    draw.text((temp_x_pos, y_pos + spacer*6),
+              metrics_values[2], font_colour["number"], font=font["number"])
+
+    # Draw watermark
+    draw.text((image_width - 175, image_height - 30),
+              tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
+
+    # Save image
+    img.save("img/outputs/highest_metrics/" +
+             username + ".png")
+    #print("Created highest metrics image.")
+
+
+# Generate image 2
 def generate_word_cloud_image(username):
 
     # Get user data
@@ -222,73 +290,10 @@ def generate_word_cloud_image(username):
 
     # Save
     img.save("img/outputs/word_clouds/" + username + ".png")
-    print("Created word cloud image.")
+    #print("Created word cloud image.")
 
 
-def generate_highest_metrics_image(username, most_likes, most_retweets, most_quotes):
-
-    # Open black image
-    img = Image.open("img/templates/purple_500x500.png")
-    draw = ImageDraw.Draw(img)
-
-    # Template size
-    image_width, image_height = img.size
-
-    font = global_font
-    font_colour = global_font_colour
-
-    x_pos = global_text_pos["x"]
-    y_pos = global_text_pos["y"]
-    spacer = global_text_pos["spacer"]
-
-    # Content
-    title_text = [username + ",", "You're popular."]
-
-    metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
-    metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
-
-    # Draw title
-    draw.text((x_pos, y_pos), title_text[0],
-              font_colour["title"], font=font["title"])
-    draw.text((x_pos, y_pos + spacer*1.1),
-              title_text[1], font_colour["title"], font=font["title"])
-
-    # Draw metric text
-    draw.text((x_pos, y_pos + spacer*3),
-              metrics_text[0], font_colour["text"], font=font["text"])
-    draw.text((x_pos, y_pos + spacer*4.5),
-              metrics_text[1], font_colour["text"], font=font["text"])
-    draw.text((x_pos, y_pos + spacer*6),
-              metrics_text[2], font_colour["text"], font=font["text"])
-
-    # Width to right align
-    num_width_0 = font["number"].getsize(metrics_values[0])[0]
-    num_width_1 = font["number"].getsize(metrics_values[1])[0]
-    num_width_2 = font["number"].getsize(metrics_values[2])[0]
-
-    # Draw metric values
-    temp_x_pos = image_width - x_pos - num_width_0
-    draw.text((temp_x_pos, y_pos + spacer*3),
-              metrics_values[0], font_colour["number"], font=font["number"])
-
-    temp_x_pos = image_width - x_pos - num_width_1
-    draw.text((temp_x_pos, y_pos + spacer*4.5),
-              metrics_values[1], font_colour["number"], font=font["number"])
-
-    temp_x_pos = image_width - x_pos - num_width_2
-    draw.text((temp_x_pos, y_pos + spacer*6),
-              metrics_values[2], font_colour["number"], font=font["number"])
-
-    # Draw watermark
-    draw.text((image_width - 175, image_height - 30),
-              tweet_wrapped_watermark[0], font_colour["title"], font=font["watermark"])
-
-    # Save image
-    img.save("img/outputs/highest_metrics/" +
-             username + ".png")
-    print("Created highest metrics image.")
-
-
+# Generate image 3
 def generate_likes_performance_image(username, likes_performance):
 
     # Open black image
@@ -382,9 +387,10 @@ def generate_likes_performance_image(username, likes_performance):
     # Save image
     img.save("img/outputs/likes_performance/" +
              username + ".png")
-    print("Created likes performance image.")
+    #print("Created likes performance image.")
 
 
+# Generate image 4
 def generate_sentiment_analysis_image(username, sentiment):
 
     # Open black image
@@ -502,7 +508,7 @@ def generate_sentiment_analysis_image(username, sentiment):
 
     # Save
     img.save("img/outputs/sentiment_analysis/" + username + ".png")
-    print("Created sentiment analysis image.")
+    #print("Created sentiment analysis image.")
 
 
 # Test image gen without calling api
@@ -525,6 +531,7 @@ def generate_sentiment_analysis_image(username, sentiment):
 #     generate_sentiment_analysis_image(sentiment)
 
 
+# Main method called by stream_mentions.py
 def main(username):
 
     # Get user info, such as id

@@ -58,8 +58,10 @@ def followStream():
 def respondToTweet(tweet_username, tweet_text, tweet_id):
     api = setUpAuth()
 
-    filenames = ['img/outputs/highest_metrics_and_likes_performance/' + tweet_username + '.png',
-                 'img/outputs/word_clouds_and_sentiment_analysis/' + tweet_username + '.png']
+    filenames = ['img/outputs/highest_metrics/' + tweet_username + '.png',
+                 'img/outputs/word_clouds' + tweet_username + '.png',
+                 'img/outputs/highest_metrics/' + tweet_username + '.png',
+                 'img/outputs/sentiment_analysis/' + tweet_username + '.png']
     media_ids = []
 
     # Upload the 2 images, and get media ids in response
@@ -67,13 +69,12 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
         response = api.media_upload(filename)
         media_ids.append(response.media_id)
 
-    print("Responding with their wrapped images...")
     # Tweet response to user, with images
     api.update_status(status=tweet_text,
                       in_reply_to_status_id=tweet_id,
                       media_ids=media_ids,
                       auto_populate_reply_metadata=True)
-    print("Done!")
+    print("Task completed successfully!")
 
 if __name__ == "__main__":
     followStream()
