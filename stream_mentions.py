@@ -57,7 +57,7 @@ def setUpAuth():
 def followStream():
     twitter_stream = streamListener(
         consumer_key, consumer_secret, access_token, access_token_secret)
-    twitter_stream.filter(track=['@TweetWrapped create'])
+    twitter_stream.filter(track=['@TweetWrapped make'])
 
 
 # Reply to the user
