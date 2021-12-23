@@ -83,48 +83,6 @@ def cleanTweet(tweet):
     return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z' \t])|(\w+:\/\/\S+)", " ", tweet).split())
 
 
-# Generating word cloud image
-def createUserWordCloud(username):
-
-    # Content-related
-    text = open('user_tweets\\' + username + '.txt',
-                'r', encoding='utf-8').read()
-
-    # Stop words, add 'gt' to set
-    stopwords = STOPWORDS.add('gt')
-
-    # Mask
-    custom_mask = np.array(Image.open(
-        'img\\masks\\twitter_logo_1080x1920.png'))
-    font = 'fonts\\SFProDisplay-Light.ttf'
-
-    # WordCloud attributes
-    wordCloud = WordCloud(
-        font_path=font,
-        mask=custom_mask,
-        background_color='black',
-        stopwords=stopwords,
-        height=1000,
-        width=1000,
-        include_numbers=False,  # include numbers
-        #margin = 10,
-        #background_color = None,
-        #mode = 'RGBA',
-        # color_func = lambda *args, **kwargs: (255,255,255) # text colour
-    )
-
-    # Generate
-    wordCloud.generate(text)
-
-    # Use colour of mask image
-    ## image_colours = ImageColorGenerator(custom_mask)
-    ## wordCloud.recolor(color_func = image_colours)
-
-    # Store to file
-    wordCloud.to_file(
-        'img\\outputs\\word_clouds_and_sentiment_analysis\\' + username + '.png')
-
-
 # Add public metrics to dataframe
 def tweetsToDataFrame(tweets):
 
@@ -421,6 +379,110 @@ def generate_highest_metrics_and_likes_performance_image(username,
              username + ".png")
 
 
+#######################################################################################################################
+
+def generate_word_cloud_image(username):
+    
+    # Get user data
+    text = open('user_tweets\\' + username + '.txt',
+                'r', encoding='utf-8').read()
+
+    # Stop words, add 'gt' to it
+    stopwords = STOPWORDS.add('gt')
+
+    # Mask
+    custom_mask = np.array(Image.open(
+        'img\\masks\\twitter_logo_500x500.png'))
+    font = 'fonts\\SFProDisplay-Light.ttf'
+
+    # WordCloud attributes
+    wordCloud = WordCloud(
+        width=500,
+        height=500,
+        font_path=font,
+        mask=custom_mask,
+        stopwords=stopwords,
+        background_color='black',
+        include_numbers=False
+        #margin = 10, background_color = None, mode = 'RGBA',
+        #color_func = lambda *args, **kwargs: (255,255,255) # text colour
+    )
+
+    # Generate
+    wordCloud.generate(text)
+
+    # Use colour of mask image
+    ## image_colours = ImageColorGenerator(custom_mask)
+    ## wordCloud.recolor(color_func = image_colours)
+
+    # Store to file
+    wordCloud.to_file(
+        'img\\outputs\\word_clouds\\' + username + '.png')
+
+    # Open pre-gen word cloud
+    img = Image.open(
+        "img/outputs/word_clouds/" + username + ".png")
+    draw = ImageDraw.Draw(img)
+
+    # Template size
+    image_width, image_height = img.size
+
+    font = {
+        "title": ImageFont.truetype("fonts/theboldfont.ttf", 30),
+        "text": ImageFont.truetype("fonts/PoetsenOne-Regular.ttf", 60),
+        "number": ImageFont.truetype("fonts/theboldfont.ttf", 100)
+    }
+
+    font_colour = {
+        "title": (213, 226, 26),
+        "text": (37, 172, 130),
+        "number": (213, 226, 26)
+    }
+
+    # Text position
+    x_pos = 20
+    y_pos = 20
+    spacer = 100
+
+    # Content
+    title_text = ["What you're Tweeting."]
+    #title_text = [username + ",", "Tweets Visualized."]
+
+    # Draw title
+    draw.text((x_pos, y_pos), title_text[0],
+              font_colour["title"], font=font["title"])
+    #draw.text((x_pos, y_pos + spacer), title_text[1], font_colour["title"], font = font["title"])
+
+    # Save
+    img.save("img/outputs/word_clouds/" + username + ".png")
+    print("Created word cloud image.")
+   
+   
+def generate_highest_metrics_image():
+    return True
+    
+def generate_likes_performance_image():
+    return True
+        
+def generate_sentiment_analysis_image():
+    return True
+
+
+if __name__ == "__main__":
+    #main(sys.argv[1])
+    
+    username="FinessTV"
+    
+    generate_word_cloud_image(username)
+    
+    # Test without calling api
+    #generate_image_one("Talal916", 6.0)
+    #generate_image_two("Talal916", 787, 16, 292, {
+    #    100: 8,
+    #    1000: 0,
+    #    10000: 0
+    # })
+        
 def main(username):
 
     # Get user info, such as id
@@ -461,27 +523,28 @@ def main(username):
             10000: len(df[df['like_count'] > 10000])
         }
 
-        # Generate image 1
+        
         generate_highest_metrics_and_likes_performance_image(username,
                                                              most_likes,
                                                              most_retweets,
                                                              most_quotes,
                                                              likes_performance)
-
-        # Generate image 2
+        
         generate_word_clouds_and_sentiment_analysis_image(username, sentiment)
+        
+        # Generate image 1 - Word cloud
+        generate_word_cloud_image()
+        
+        # Generate image 2 - Highest metrics
+        generate_highest_metrics_image()
+    
+        # Generate image 3 - Likes performance
+        generate_likes_performance_image()
+        
+        # Generate image 4 - Sentiment analysis
+        generate_sentiment_analysis_image()
+        
         return True
 
     else:
         return False
-
-# if __name__ == "__main__":
-#    main(sys.argv[1])
-
-    # Test without calling api
-    #generate_image_one("Talal916", 6.0)
-    # generate_image_two("Talal916", 787, 16, 292, {
-    #    100: 8,
-    #    1000: 0,
-    #    10000: 0
-    # })
