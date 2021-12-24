@@ -75,9 +75,12 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
     media_ids = []
 
     # Upload the 2 images, and get media ids in response
-    for filename in filenames:
-        response = api.media_upload(filename)
-        media_ids.append(response.media_id)
+    try:
+        for filename in filenames:
+            response = api.media_upload(filename)
+            media_ids.append(response.media_id)
+    except Exception as e:
+        print(e)
 
     # Tweet response to user, with images
     try:
