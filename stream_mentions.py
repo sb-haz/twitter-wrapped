@@ -83,14 +83,6 @@ def followStream():
         print("FOLLOW STREAM ERROR: " + e)
 
 
-#def addToReplyQueue(tweet):
-#    q.put(tweet)
-#    print("Added to queue: " + str(q.qsize()) + " requests")
-
-# Reply to the user
-# on loop as soon as each req is done
-
-
 def respondToTweets():
     
     # Set up auth
@@ -122,6 +114,7 @@ def respondToTweets():
                 response = api.media_upload(filename)
                 media_ids.append(response.media_id)
 
+        # If media upload fails
         except Exception as e:
             print("UPLOAD ERROR: " + str(e))
             pass
@@ -136,6 +129,7 @@ def respondToTweets():
             print("✔ Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
             return True
 
+        # If tweet upload fails
         except Exception as e:
             print("REPLY ERROR: " + str(e))
             pass
