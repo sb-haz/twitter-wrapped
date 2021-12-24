@@ -546,6 +546,8 @@ def main(username):
 
         # Get average sentiment of all user tweets
         sentiment = np.average(df['sentiment']) * 100
+        # Remove repeating demial e.g. 12.11111...
+        sentiment = float("{0:.2f}".format(sentiment))
 
         # pd.set_option('display.max_rows', 100) # Change how many rows df prints
         # print(df.head(100))  # Print dataframe
