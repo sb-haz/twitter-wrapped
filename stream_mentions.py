@@ -25,13 +25,16 @@ class streamListener(tweepy.Stream):
 
         # convert it into a python object
         clean_data = json.loads(data)
-
+        #print(clean_data)
         # id of user who mentioned bot
         # can also do 'name' to get username
         # if 'protected' true, then stop
         # if 'following' false, then stop
 
-        tweet_id = clean_data['id']
+        if 'retweeted_status' in clean_data:
+            return False
+            
+        tweet_id = clean_data['id']            
         tweet_username = clean_data['user']['screen_name']  # screen_name
         tweet_text = "@" + tweet_username + " Here's your 2021 Twitter Wrapped!"
 
@@ -42,7 +45,7 @@ class streamListener(tweepy.Stream):
         }
 
         userQueue.put(tweet)
-        print("Added " + tweet_username + "to queue: " + str(userQueue.qsize()))
+        print("Added " + tweet_username + ", " + str(userQueue.qsize()) + " waiting")
         return True
 
         # Call twitter api to get user data
@@ -130,8 +133,7 @@ def respondToTweets():
                               media_ids=media_ids,
                               auto_populate_reply_metadata=True)
             
-            print("Replied successfully. Queue size: " +
-                  str(userQueue.qsize()) + " requests")
+            print("✔ Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
             return True
 
         except Exception as e:
