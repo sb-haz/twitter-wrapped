@@ -147,6 +147,10 @@ def respondToTweets():
         tweet = userQueue.get()
         if create_images(tweet):
             upload_images(tweet)
+            # Avoid being rate limited :(
+            # POST endpoint has limit of 300 tweets per 3-hour window
+            # 1 tweet per 35s is ~308 tweets
+            time.sleep(35)
 
 
 if __name__ == "__main__":
