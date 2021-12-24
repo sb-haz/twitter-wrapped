@@ -2,6 +2,7 @@ import tweepy
 import twitter_credentials
 import json
 import queue
+from threading import Thread
 
 # Create and save images
 import generate_image
@@ -114,9 +115,10 @@ def respondToTweet():
                                       in_reply_to_status_id=tweet_id,
                                       media_ids=media_ids,
                                       auto_populate_reply_metadata=True)
-                    print("Replied successfully. Queue size: " + str(q.qsize()) + " requests")
+                    print("Replied successfully. Queue size: " +
+                          str(q.qsize()) + " requests")
                     return True
-                    
+
                 except Exception as e:
                     print("REPLY ERROR: " + e)
 
@@ -130,5 +132,5 @@ def respondToTweet():
 
 
 if __name__ == "__main__":
-    followStream()
-    respondToTweet()
+    Thread(target=followStream).start()
+    Thread(target=respondToTweet).start()
