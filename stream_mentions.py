@@ -80,11 +80,14 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
         media_ids.append(response.media_id)
 
     # Tweet response to user, with images
-    api.update_status(status=tweet_text,
+    try:
+        api.update_status(status=tweet_text,
                       in_reply_to_status_id=tweet_id,
                       media_ids=media_ids,
                       auto_populate_reply_metadata=True)
-    print("Replied successfully!")
+        print("Replied successfully!")
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
