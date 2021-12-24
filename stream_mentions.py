@@ -2,6 +2,7 @@ import tweepy
 import twitter_credentials
 import json
 import queue
+import time
 from threading import Thread
 
 # Create and save images
@@ -14,6 +15,8 @@ consumer_secret = twitter_credentials.consumer_secret
 access_token = twitter_credentials.access_token
 access_token_secret = twitter_credentials.access_token_secret
 
+# Queue
+userQueue = queue.Queue()
 
 # Listener class
 class streamListener(tweepy.Stream):
@@ -38,20 +41,24 @@ class streamListener(tweepy.Stream):
             "id": tweet_id
         }
 
+        userQueue.put(tweet)
+        print("Added " + tweet_username + "to queue: " + str(userQueue.qsize()))
+        return True
+
         # Call twitter api to get user data
         # Store in file and data structures
         # Generate and save images
-        print("Received request from" + tweet_username)
-        if generate_image.main(tweet_username):
+        #print("Received request from" + tweet_username)
+        #if generate_image.main(tweet_username):
 
             # Reply to user with their generated images
-            #addToReplyQueue(tweet_username, tweet_text, tweet_id)
+            # addToReplyQueue(tweet_username, tweet_text, tweet_id)
 
-            addToReplyQueue(tweet)
-            return True
+        #    addToReplyQueue(tweet)
+        #    return True
 
     def on_error(self, status):
-        print(status)
+        print("LISTENER ERROR: " + status)
         return True
 
 
@@ -70,31 +77,34 @@ def followStream():
             consumer_key, consumer_secret, access_token, access_token_secret)
         twitter_stream.filter(track=['Make @TweetWrapped'])
     except Exception as e:
-        print("STREAM ERROR: " + e)
+        print("FOLLOW STREAM ERROR: " + e)
 
 
-# Add request to a queue
-q = queue.Queue()
-
-
-def addToReplyQueue(tweet):
-    q.put(tweet)
-    print("Added to queue: " + str(q.qsize()) + " requests")
+#def addToReplyQueue(tweet):
+#    q.put(tweet)
+#    print("Added to queue: " + str(q.qsize()) + " requests")
 
 # Reply to the user
 # on loop as soon as each req is done
 
 
-def respondToTweet():
+def respondToTweets():
+    
+    # Set up auth once
     api = setUpAuth()
 
+    # Create images
+    def create_images(tweet):
+        generate_image.main(tweet['username'])
+        return True
+        
     # Upload reply to a user
-    def upload(tweet):
+    def upload_images(tweet):
         tweet_username = tweet['username']
         tweet_text = tweet['text']
         tweet_id = tweet['id']
 
-        # Get images
+        # Get images filepath
         filenames = ['img/outputs/highest_metrics/' + tweet_username + '.png',
                      'img/outputs/word_clouds/' + tweet_username + '.png',
                      'img/outputs/likes_performance/' + tweet_username + '.png',
@@ -103,34 +113,41 @@ def respondToTweet():
         # To contain ID of uploaded images
         media_ids = []
 
-        # Upload the 2 images, and get media ids in response
+        # Upload all images, and get media ids in response
         try:
             for filename in filenames:
                 response = api.media_upload(filename)
                 media_ids.append(response.media_id)
 
-                # Tweet response to user, with images
-                try:
-                    api.update_status(status=tweet_text,
-                                      in_reply_to_status_id=tweet_id,
-                                      media_ids=media_ids,
-                                      auto_populate_reply_metadata=True)
-                    print("Replied successfully. Queue size: " +
-                          str(q.qsize()) + " requests")
-                    return True
+        except Exception as e:
+            print("UPLOAD ERROR: " + str(e))
+            pass
 
-                except Exception as e:
-                    print("REPLY ERROR: " + e)
+        # Tweet response to user, with images
+        try:
+            api.update_status(status=tweet_text,
+                              in_reply_to_status_id=tweet_id,
+                              media_ids=media_ids,
+                              auto_populate_reply_metadata=True)
+            
+            print("Replied successfully. Queue size: " +
+                  str(userQueue.qsize()) + " requests")
+            return True
 
         except Exception as e:
-            print("UPLOAD ERROR: " + e)
+            print("REPLY ERROR: " + str(e))
+            pass
+        
+        return True
 
     # Re-run queue
     while True:
-        tweet = q.get()
-        upload(tweet)
+        tweet = userQueue.get()
+        if create_images(tweet):
+            upload_images(tweet)
 
 
 if __name__ == "__main__":
     Thread(target=followStream).start()
-    Thread(target=respondToTweet).start()
+    time.sleep(15)
+    Thread(target=respondToTweets).start()
