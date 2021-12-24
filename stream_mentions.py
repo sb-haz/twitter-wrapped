@@ -56,9 +56,12 @@ def setUpAuth():
 
 # Follow stream, listens for mentions
 def followStream():
-    twitter_stream = streamListener(
-        consumer_key, consumer_secret, access_token, access_token_secret)
-    twitter_stream.filter(track=['@TweetWrapped make'])
+    try:
+        twitter_stream = streamListener(
+            consumer_key, consumer_secret, access_token, access_token_secret)
+        twitter_stream.filter(track=['Make @TweetWrapped'])
+    except Exception as e:
+        print(e)
 
 
 # Reply to the user
@@ -70,7 +73,7 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
                  'img/outputs/word_clouds/' + tweet_username + '.png',
                  'img/outputs/likes_performance/' + tweet_username + '.png',
                  'img/outputs/sentiment_analysis/' + tweet_username + '.png']
-    
+
     # To contain ID of uploaded images
     media_ids = []
 
@@ -85,9 +88,9 @@ def respondToTweet(tweet_username, tweet_text, tweet_id):
     # Tweet response to user, with images
     try:
         api.update_status(status=tweet_text,
-                      in_reply_to_status_id=tweet_id,
-                      media_ids=media_ids,
-                      auto_populate_reply_metadata=True)
+                          in_reply_to_status_id=tweet_id,
+                          media_ids=media_ids,
+                          auto_populate_reply_metadata=True)
         print("Replied successfully!")
     except Exception as e:
         print(e)
