@@ -90,7 +90,7 @@ def followStream():
 
 def respondToTweets():
     
-    # Set up auth once
+    # Set up auth
     api = setUpAuth()
 
     # Create images
