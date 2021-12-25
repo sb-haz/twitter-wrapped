@@ -1,2 +1,0 @@
-{'username': 'ka', 'id': 234234}
-{'username': 'ad', 'id': 76766}
