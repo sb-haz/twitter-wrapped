@@ -44,7 +44,7 @@ def storeUserTweets(username, user_tweets):
     file_path = 'user_tweets/' + username + '.txt'
 
     # user has tweets
-    if len(user_tweets.data) > 0:
+    if user_tweets.data is not None and len(user_tweets.data) > 0:
 
         # user tweets not stored in file
         if not os.path.exists(file_path):
