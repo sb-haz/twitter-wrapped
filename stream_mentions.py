@@ -16,7 +16,7 @@ access_token = twitter_credentials.access_token
 access_token_secret = twitter_credentials.access_token_secret
 
 # Queue
-userQueue = queue.Queue()
+#userQueue = queue.Queue()
 
 # Listener class
 class streamListener(tweepy.Stream):
@@ -36,16 +36,24 @@ class streamListener(tweepy.Stream):
             
         tweet_id = clean_data['id']            
         tweet_username = clean_data['user']['screen_name']  # screen_name
-        tweet_text = "@" + tweet_username + " Here's your 2021 Twitter Wrapped!"
-
+        
         tweet = {
             "username": tweet_username,
-            "text": tweet_text,
-            "id": tweet_id
+            "tweet_id": tweet_id
         }
 
-        userQueue.put(tweet)
-        print(str(userQueue.qsize()) + " waiting - Added " + tweet_username)
+        # Old queue
+        #userQueue.put(tweet)
+        
+        # New persistent file queue
+        file_queue_add(tweet)
+        
+        # Old queue
+        #print(str(userQueue.qsize()) + " waiting - Added " + tweet_username)
+        
+        num_lines = sum(1 for line in open('queue.txt'))
+        print(str(num_lines) + " waiting - Added " + tweet_username)
+        
         return True
 
         # Call twitter api to get user data
@@ -73,6 +81,43 @@ def setUpAuth():
     return api
 
 
+# Add to queue
+def file_queue_add(tweet):
+    
+    # Open file in append mode
+    with open('queue.txt', 'a') as file:
+        
+        # Write tweet to file
+        file.write(str(tweet) + "\n")
+        
+
+# Get then remove first line of queue
+def file_queue_get():
+    
+    # Load queue file in read mode
+    with open('queue.txt', 'r') as file:
+                
+        # All file data
+        data = file.read().splitlines(True)
+        
+        # Get first line
+        # Replace ' with ", Json decoder requires "
+        # Remove \n
+        first_line = data[0].replace("'", "\"").replace("\n", "")
+        
+        # Convert to dictionary
+        tweet = json.loads(first_line)
+        
+    # Load file again but in write mode
+    with open('queue.txt', 'w') as file:
+        
+        # Write data to file without first line
+        file.writelines(data[1:])
+
+    # Return tweet at top of queue
+    return tweet
+    
+    
 # Follow stream, listens for mentions
 def followStream():
     try:
@@ -96,8 +141,8 @@ def respondToTweets():
     # Upload reply to a user
     def upload_images(tweet):
         tweet_username = tweet['username']
-        tweet_text = tweet['text']
-        tweet_id = tweet['id']
+        tweet_id = tweet['tweet_id']
+        tweet_text = "@" + tweet_username + " Here's your 2021 Twitter Wrapped!"
 
         # Get images filepath
         filenames = ['img/outputs/highest_metrics/' + tweet_username + '.png',
@@ -126,7 +171,7 @@ def respondToTweets():
                               media_ids=media_ids,
                               auto_populate_reply_metadata=True)
             
-            print("✓ Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
+            print("Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
             return True
 
         # If tweet upload fails
@@ -138,7 +183,7 @@ def respondToTweets():
 
     # Re-run queue
     while True:
-        tweet = userQueue.get()
+        tweet = file_queue_get()
         if create_images(tweet):
             upload_images(tweet)
             # Avoid being rate limited :(

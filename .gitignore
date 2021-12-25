@@ -4,6 +4,8 @@ twitter_credentials.py
 # User tweets / word clouds
 # Remove contents but keep folder
 user_tweets/*
+# Queue
+queue.txt
 
 img/outputs/word_clouds/*
 img/outputs/highest_metrics/*
