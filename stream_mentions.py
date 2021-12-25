@@ -45,7 +45,7 @@ class streamListener(tweepy.Stream):
         }
 
         userQueue.put(tweet)
-        print("Added " + tweet_username + ", " + str(userQueue.qsize()) + " waiting")
+        print(str(userQueue.qsize()) + " waiting - Added " + tweet_username)
         return True
 
         # Call twitter api to get user data
@@ -126,7 +126,7 @@ def respondToTweets():
                               media_ids=media_ids,
                               auto_populate_reply_metadata=True)
             
-            print("✓ Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
+            print("> Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
             return True
 
         # If tweet upload fails
