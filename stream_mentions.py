@@ -126,7 +126,7 @@ def respondToTweets():
                               media_ids=media_ids,
                               auto_populate_reply_metadata=True)
             
-            print("> Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
+            print("✓ Replied successfully to " + str(tweet_id) + "(" + tweet_username + ")")
             return True
 
         # If tweet upload fails
