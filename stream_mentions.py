@@ -135,8 +135,10 @@ def respondToTweets():
 
     # Create images
     def create_images(tweet):
-        generate_image.main(tweet['username'])
-        return True
+        if generate_image.main(tweet['username']):
+            return True 
+        else:
+            return False
         
     # Upload reply to a user
     def upload_images(tweet):

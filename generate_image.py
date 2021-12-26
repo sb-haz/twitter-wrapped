@@ -530,7 +530,11 @@ def main(username):
     # Get user info, such as id
     user = getUserInfo(username)
     # Get tweets of user by id
-    user_tweets = getUserRecentTweets(user.id)
+    try:
+        user_tweets = getUserRecentTweets(user.id)
+    except Exception as e:
+        print(e)
+        return False
 
     # If user has already been processed, i.e. already used bot...
     # storeUserTweets will return false, and program will stop...
