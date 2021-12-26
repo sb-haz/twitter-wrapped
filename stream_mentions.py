@@ -144,7 +144,7 @@ def respondToTweets():
     def upload_images(tweet):
         tweet_username = tweet['username']
         tweet_id = tweet['tweet_id']
-        tweet_text = "@" + tweet_username + " Here's your 2021 Twitter Wrapped!"
+        tweet_text = "Hey @" + tweet_username + " Here's your Twitter Wrapped 2021! :)"
 
         # Get images filepath
         filenames = ['img/outputs/highest_metrics/' + tweet_username + '.png',
