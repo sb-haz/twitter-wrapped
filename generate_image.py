@@ -167,7 +167,18 @@ def generate_highest_metrics_image(username, most_likes, most_retweets, most_quo
     spacer = global_text_pos["spacer"]
 
     # Content
-    title_text = [username + ",", "You're popular."]
+    if most_likes > 1000:
+        popularity_txt = "You're Popular!"
+    elif most_likes > 500:
+        popularity_txt = "You're Growing!"
+    elif most_likes > 100:
+        popularity_txt  = "You're Doing OK!"
+    elif most_likes > 10:
+        popularity_txt = "You're Doing Meh."
+    else:
+        popularity_txt = "You're not popular :("
+    
+    title_text = [username + ",", popularity_txt]
 
     metrics_text = ["Most Likes", "Most Retweets", "Most Quotes"]
     metrics_values = [str(most_likes), str(most_retweets), str(most_quotes)]
@@ -504,13 +515,13 @@ def generate_sentiment_analysis_image(username, sentiment):
     #print("Created sentiment analysis image.")
 
 
-# # Test image gen without calling api
-# if __name__ == "__main__":
+# Test image gen without calling api
+#if __name__ == "__main__":
 #      # main(sys.argv[1])
-#      username = "FinessTV"
-#      most_likes = 76
-#      most_retweets = 10
-#      most_quotes = 2
+#    username = "FinessTV"
+#    most_likes = 5
+#    most_retweets = 10
+#    most_quotes = 2
 #      likes_performance = {
 #          100: 19,
 #          500: 3,
